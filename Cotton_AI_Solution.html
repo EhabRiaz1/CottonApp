@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Solution — Cotton AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #09090B;
+  --bg-elevated: #111113;
+  --bg-card: #16161A;
+  --bg-card-hover: #1C1C21;
+  --bg-sidebar: #0E0E10;
+  --bg-input: #1A1A1F;
+  --bg-msg-ai: #141418;
+  --text: #E4E2DB;
+  --text-dim: #7A7872;
+  --text-muted: #4A4944;
+  --gold: #C8A96E;
+  --gold-bright: #DBBD84;
+  --gold-dim: #8A7545;
+  --green: #4ADE80;
+  --amber: #FBBF24;
+  --blue: #60A5FA;
+  --red: #F87171;
+  --border: rgba(255,255,255,0.06);
+  --border-gold: rgba(200,169,110,0.2);
+  --serif: 'Cormorant Garamond', Georgia, serif;
+  --sans: 'Outfit', -apple-system, sans-serif;
+  --mono: 'JetBrains Mono', monospace;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { font-family: var(--sans); color: var(--text); background: var(--bg); overflow-x: hidden; -webkit-font-smoothing: antialiased; }
+body::after {
+  content: ''; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  pointer-events: none; z-index: 9999; opacity: 0.025;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+}
+
+/* NAV */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 20px 72px;
+  background: rgba(9,9,11,0.8);
+  backdrop-filter: blur(24px) saturate(1.2);
+  border-bottom: 1px solid var(--border);
+}
+.nav-logo {
+  font-family: var(--sans); font-weight: 600; font-size: 16px;
+  letter-spacing: 3px; text-transform: uppercase; color: var(--gold);
+  display: flex; align-items: center; gap: 12px; text-decoration: none;
+}
+.nav-logo-line { width: 24px; height: 1px; background: var(--gold-dim); }
+.nav-links { display: flex; gap: 40px; list-style: none; }
+.nav-links a {
+  text-decoration: none; color: var(--text-dim); font-size: 13px;
+  font-weight: 400; letter-spacing: 1px; text-transform: uppercase; transition: color 0.3s;
+}
+.nav-links a:hover { color: var(--text); }
+.nav-links a.active { color: var(--gold); }
+.nav-cta {
+  color: var(--gold); border: 1px solid var(--border-gold);
+  padding: 10px 28px; font-size: 12px; letter-spacing: 1.5px;
+  text-transform: uppercase; font-weight: 500;
+  text-decoration: none; transition: all 0.3s; background: transparent;
+}
+.nav-cta:hover { background: rgba(200,169,110,0.08); border-color: var(--gold); }
+
+/* PAGE HERO */
+.page-hero {
+  padding: 180px 72px 80px; text-align: center;
+  position: relative;
+}
+.page-hero::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+  background: radial-gradient(ellipse 50% 60% at 50% 30%, rgba(200,169,110,0.04), transparent);
+  pointer-events: none;
+}
+.page-overline {
+  font-size: 11px; letter-spacing: 4px; text-transform: uppercase;
+  color: var(--gold-dim); font-weight: 500; margin-bottom: 24px;
+  position: relative;
+}
+.page-hero h1 {
+  font-family: var(--serif); font-size: clamp(42px, 5.5vw, 72px);
+  line-height: 1.05; font-weight: 400; color: var(--text);
+  max-width: 800px; margin: 0 auto 24px; letter-spacing: -1px;
+  position: relative;
+}
+.page-hero h1 em { font-style: italic; color: var(--gold); }
+.page-hero p {
+  font-size: 17px; color: var(--text-dim); max-width: 520px;
+  line-height: 1.8; margin: 0 auto; font-weight: 300; position: relative;
+}
+
+/* PRODUCT MOCKUP SECTION */
+.product-section { padding: 40px 72px 120px; }
+.product-frame {
+  max-width: 1200px; margin: 0 auto;
+  border: 1px solid var(--border); border-radius: 12px;
+  overflow: hidden; background: var(--bg-elevated);
+  box-shadow: 0 40px 120px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.03);
+}
+
+/* BROWSER CHROME */
+.browser-bar {
+  display: flex; align-items: center; padding: 14px 20px;
+  background: rgba(255,255,255,0.02); border-bottom: 1px solid var(--border);
+  gap: 12px;
+}
+.browser-dots { display: flex; gap: 6px; }
+.browser-dots span { width: 10px; height: 10px; border-radius: 50%; }
+.browser-dots span:nth-child(1) { background: #FF5F57; }
+.browser-dots span:nth-child(2) { background: #FEBC2E; }
+.browser-dots span:nth-child(3) { background: #28C840; }
+.browser-url {
+  flex: 1; text-align: center;
+  font-size: 12px; color: var(--text-muted); letter-spacing: 0.5px;
+  font-family: var(--mono);
+}
+
+/* APP LAYOUT */
+.app-layout { display: flex; height: 680px; }
+
+/* SIDEBAR */
+.app-sidebar {
+  width: 260px; background: var(--bg-sidebar);
+  border-right: 1px solid var(--border);
+  display: flex; flex-direction: column;
+  padding: 0;
+}
+.sidebar-header {
+  padding: 20px; border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.sidebar-logo {
+  font-family: var(--sans); font-weight: 600; font-size: 14px;
+  letter-spacing: 2px; text-transform: uppercase; color: var(--gold);
+  display: flex; align-items: center; gap: 8px;
+}
+.sidebar-logo-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--gold); }
+.new-chat-btn {
+  width: 28px; height: 28px; border-radius: 6px;
+  border: 1px solid var(--border); background: transparent;
+  color: var(--text-dim); font-size: 16px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.2s;
+}
+.new-chat-btn:hover { border-color: var(--gold-dim); color: var(--gold); }
+
+.sidebar-section { padding: 16px 12px 8px; }
+.sidebar-section-title {
+  font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
+  color: var(--text-muted); padding: 0 8px; margin-bottom: 8px;
+}
+.sidebar-item {
+  padding: 10px 12px; border-radius: 6px; font-size: 13px;
+  color: var(--text-dim); cursor: pointer; transition: all 0.2s;
+  margin-bottom: 2px; display: flex; align-items: center; gap: 10px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.sidebar-item:hover { background: rgba(255,255,255,0.04); color: var(--text); }
+.sidebar-item.active { background: rgba(200,169,110,0.08); color: var(--gold); }
+.sidebar-item-dot { width: 4px; height: 4px; border-radius: 50%; flex-shrink: 0; }
+.dot-green { background: var(--green); }
+.dot-amber { background: var(--amber); }
+.dot-blue { background: var(--blue); }
+
+.sidebar-footer {
+  margin-top: auto; padding: 16px; border-top: 1px solid var(--border);
+}
+.sidebar-user {
+  display: flex; align-items: center; gap: 10px;
+  font-size: 13px; color: var(--text-dim);
+}
+.sidebar-avatar {
+  width: 28px; height: 28px; border-radius: 6px;
+  background: linear-gradient(135deg, var(--gold-dim), var(--gold));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 700; color: var(--bg);
+}
+
+/* MAIN CHAT */
+.app-main {
+  flex: 1; display: flex; flex-direction: column;
+  background: var(--bg-elevated);
+}
+.chat-header {
+  padding: 16px 24px; border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.chat-title { font-size: 14px; font-weight: 500; color: var(--text); }
+.chat-status {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 11px; color: var(--green); letter-spacing: 1px; text-transform: uppercase;
+}
+.chat-status-dot {
+  width: 5px; height: 5px; border-radius: 50%; background: var(--green);
+  animation: pulse 2s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; } 50% { opacity: 0.4; }
+}
+
+.chat-messages {
+  flex: 1; overflow-y: auto; padding: 32px 24px;
+  display: flex; flex-direction: column; gap: 24px;
+}
+
+/* MESSAGE STYLES */
+.msg { display: flex; gap: 16px; max-width: 800px; }
+.msg-user { flex-direction: row-reverse; margin-left: auto; }
+.msg-avatar {
+  width: 32px; height: 32px; border-radius: 8px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 600;
+}
+.msg-ai .msg-avatar { background: linear-gradient(135deg, #1a2f1f, #2d4a35); color: var(--green); font-family: var(--mono); }
+.msg-user .msg-avatar { background: linear-gradient(135deg, var(--gold-dim), var(--gold)); color: var(--bg); }
+.msg-body { flex: 1; }
+.msg-sender { font-size: 11px; color: var(--text-muted); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 8px; }
+.msg-user .msg-sender { text-align: right; }
+.msg-content {
+  font-size: 14px; line-height: 1.7; color: var(--text-dim);
+  padding: 16px 20px; border-radius: 12px;
+}
+.msg-ai .msg-content { background: var(--bg-msg-ai); border: 1px solid var(--border); }
+.msg-user .msg-content { background: rgba(200,169,110,0.1); border: 1px solid var(--border-gold); color: var(--text); }
+.msg-content strong { color: var(--text); font-weight: 500; }
+
+/* SIGNAL CARD IN CHAT */
+.signal-card {
+  margin-top: 12px; background: rgba(0,0,0,0.3);
+  border: 1px solid var(--border); border-radius: 8px;
+  padding: 16px; font-family: var(--mono);
+}
+.signal-card-header {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 12px; padding-bottom: 10px; border-bottom: 1px solid var(--border);
+}
+.signal-card-type { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; font-weight: 600; }
+.signal-card-type.buy { color: var(--green); }
+.signal-card-type.hedge { color: var(--blue); }
+.signal-card-conf { font-size: 11px; color: var(--text-muted); }
+.signal-card-rows { display: flex; flex-direction: column; gap: 6px; }
+.signal-card-row {
+  display: flex; justify-content: space-between;
+  font-size: 12px;
+}
+.signal-card-row .label { color: var(--text-muted); }
+.signal-card-row .value { color: var(--text); font-weight: 500; }
+.signal-card-row .value.positive { color: var(--green); }
+.signal-card-row .value.caution { color: var(--amber); }
+
+/* DATA TABLE IN CHAT */
+.data-table {
+  margin-top: 12px; width: 100%;
+  border-collapse: collapse; font-size: 12px;
+  font-family: var(--mono);
+}
+.data-table th {
+  text-align: left; padding: 8px 12px;
+  font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase;
+  color: var(--text-muted); border-bottom: 1px solid var(--border);
+  font-weight: 500;
+}
+.data-table td {
+  padding: 8px 12px; color: var(--text-dim);
+  border-bottom: 1px solid rgba(255,255,255,0.03);
+}
+.data-table td.highlight { color: var(--gold); font-weight: 500; }
+.data-table td.positive { color: var(--green); }
+.data-table td.negative { color: var(--red); }
+
+/* CHAT INPUT */
+.chat-input-area {
+  padding: 16px 24px 24px; border-top: 1px solid var(--border);
+}
+.chat-input-box {
+  display: flex; align-items: center; gap: 12px;
+  background: var(--bg-input); border: 1px solid var(--border);
+  border-radius: 12px; padding: 14px 20px;
+  transition: border-color 0.2s;
+}
+.chat-input-box:hover { border-color: rgba(255,255,255,0.1); }
+.chat-input {
+  flex: 1; background: transparent; border: none; outline: none;
+  font-family: var(--sans); font-size: 14px; color: var(--text);
+  font-weight: 300;
+}
+.chat-input::placeholder { color: var(--text-muted); }
+.chat-send {
+  width: 32px; height: 32px; border-radius: 8px;
+  background: var(--gold); border: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--bg); font-size: 14px; font-weight: 700;
+  transition: all 0.2s;
+}
+.chat-send:hover { background: var(--gold-bright); }
+.chat-disclaimer {
+  text-align: center; font-size: 11px; color: var(--text-muted);
+  margin-top: 10px; letter-spacing: 0.3px;
+}
+
+/* FEATURES BELOW MOCKUP */
+.features-section {
+  padding: 120px 72px; max-width: 1200px; margin: 0 auto;
+}
+.features-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 1px; background: var(--border);
+}
+.feature-card {
+  background: var(--bg); padding: 48px 36px;
+  transition: background 0.3s;
+}
+.feature-card:hover { background: var(--bg-elevated); }
+.feature-card .num {
+  font-family: var(--serif); font-size: 13px; color: var(--gold-dim);
+  font-style: italic; margin-bottom: 20px;
+}
+.feature-card h3 {
+  font-family: var(--serif); font-size: 24px; font-weight: 400;
+  margin-bottom: 12px; color: var(--text);
+}
+.feature-card p {
+  font-size: 14px; color: var(--text-dim); line-height: 1.7; font-weight: 300;
+}
+
+/* ANIMATIONS */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.page-overline, .page-hero h1, .page-hero p {
+  animation: fadeUp 0.8s ease-out both;
+}
+.page-hero h1 { animation-delay: 0.1s; }
+.page-hero p { animation-delay: 0.2s; }
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  nav { padding: 16px 24px; }
+  .nav-links { display: none; }
+  .page-hero { padding: 140px 24px 60px; }
+  .product-section { padding: 20px 16px 80px; }
+  .app-sidebar { display: none; }
+  .app-layout { height: 560px; }
+  .features-section { padding: 80px 24px; }
+  .features-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="nav-logo">
+    <span class="nav-logo-line"></span>
+    Cotton AI
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="solution.html" class="active">Solution</a></li>
+    <li><a href="partners.html">Partners</a></li>
+    <li><a href="index.html#pricing">Pricing</a></li>
+    <li><a href="index.html#contact">Contact</a></li>
+  </ul>
+  <a href="index.html#contact" class="nav-cta">Request Access</a>
+</nav>
+
+<!-- PAGE HERO -->
+<section class="page-hero">
+  <div class="page-overline">Solution</div>
+  <h1>Your procurement <em>command center</em></h1>
+  <p>A live AI engine that never sleeps. Cotton AI continuously monitors global market conditions, weather events, and supply disruptions — instantly recalculating its recommendations when a hurricane hits Texas, floods sweep through Pakistan, or a drought strikes West Africa.</p>
+</section>
+
+<!-- PRODUCT MOCKUP -->
+<section class="product-section">
+  <div class="product-frame">
+    <div class="browser-bar">
+      <div class="browser-dots"><span></span><span></span><span></span></div>
+      <div class="browser-url">app.ysintelligence.ai</div>
+    </div>
+    <div class="app-layout">
+
+      <!-- SIDEBAR -->
+      <div class="app-sidebar">
+        <div class="sidebar-header">
+          <div class="sidebar-logo">
+            <span class="sidebar-logo-dot"></span>
+            Cotton AI
+          </div>
+          <button class="new-chat-btn">+</button>
+        </div>
+
+        <div class="sidebar-section">
+          <div class="sidebar-section-title">Today</div>
+          <div class="sidebar-item active">
+            <span class="sidebar-item-dot dot-green"></span>
+            Dec26 Brazilian fixation analysis
+          </div>
+          <div class="sidebar-item">
+            <span class="sidebar-item-dot dot-blue"></span>
+            Hedging strategy — Dec26 puts
+          </div>
+          <div class="sidebar-item">
+            <span class="sidebar-item-dot dot-amber"></span>
+            US Middling basis watch
+          </div>
+        </div>
+
+        <div class="sidebar-section">
+          <div class="sidebar-section-title">Yesterday</div>
+          <div class="sidebar-item">
+            <span class="sidebar-item-dot dot-green"></span>
+            Q3 procurement plan review
+          </div>
+          <div class="sidebar-item">
+            <span class="sidebar-item-dot dot-blue"></span>
+            USDA WASDE impact analysis
+          </div>
+        </div>
+
+        <div class="sidebar-section">
+          <div class="sidebar-section-title">Last Week</div>
+          <div class="sidebar-item">
+            <span class="sidebar-item-dot dot-amber"></span>
+            Origin comparison — Brazil vs WA
+          </div>
+          <div class="sidebar-item">
+            <span class="sidebar-item-dot dot-green"></span>
+            Volatility surface review
+          </div>
+        </div>
+
+        <div class="sidebar-footer">
+          <div class="sidebar-user">
+            <div class="sidebar-avatar">OY</div>
+            <span>Omer Yahya</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- MAIN CHAT -->
+      <div class="app-main">
+        <div class="chat-header">
+          <div class="chat-title">Dec26 Brazilian fixation analysis</div>
+          <div class="chat-status">
+            <span class="chat-status-dot"></span>
+            Live Market Data
+          </div>
+        </div>
+
+        <div class="chat-messages">
+          <!-- USER MESSAGE -->
+          <div class="msg msg-user">
+            <div class="msg-avatar">OY</div>
+            <div class="msg-body">
+              <div class="msg-sender">You</div>
+              <div class="msg-content">I have 10,000 MT of Brazilian Middling 36 G5 28 GPT min on call Dec 26, basis 700. Nov/Dec shipment split equally. Should I fix now?</div>
+            </div>
+          </div>
+
+          <!-- AI MESSAGE -->
+          <div class="msg msg-ai">
+            <div class="msg-avatar">CA</div>
+            <div class="msg-body">
+              <div class="msg-sender">Cotton AI</div>
+              <div class="msg-content">
+                Based on our price forecast and your mill's risk profile, <strong>yes — this is an optimal fixation window for your Nov shipment.</strong> Here's the breakdown:
+
+                <div class="signal-card">
+                  <div class="signal-card-header">
+                    <span class="signal-card-type buy">▲ FIX SIGNAL</span>
+                    <span class="signal-card-conf">Confidence: 87%</span>
+                  </div>
+                  <div class="signal-card-rows">
+                    <div class="signal-card-row">
+                      <span class="label">Origin</span>
+                      <span class="value">Brazilian M36 G5 28 GPT min</span>
+                    </div>
+                    <div class="signal-card-row">
+                      <span class="label">Current Basis</span>
+                      <span class="value">700 on Dec26</span>
+                    </div>
+                    <div class="signal-card-row">
+                      <span class="label">Model Used</span>
+                      <span class="value positive">Gradient Boosted Regression (XGBoost)</span>
+                    </div>
+                    <div class="signal-card-row">
+                      <span class="label">Why This Model</span>
+                      <span class="value">Best fit for combining fixation time horizon with seasonal market patterns to identify optimal entry points</span>
+                    </div>
+                    <div class="signal-card-row">
+                      <span class="label">Price Forecast</span>
+                      <span class="value caution">Dec26 ICE projected to soften 150-200 pts over next 3 weeks</span>
+                    </div>
+                    <div class="signal-card-row">
+                      <span class="label">Your Risk Profile</span>
+                      <span class="value">Moderate — your past fixations show a pattern of fixing late and missing optimal windows by 50-80 pts</span>
+                    </div>
+                    <div class="signal-card-row">
+                      <span class="label">Recommended Fix</span>
+                      <span class="value positive">5,000 MT (Nov shipment) — fix now at 700</span>
+                    </div>
+                    <div class="signal-card-row">
+                      <span class="label">Remaining</span>
+                      <span class="value caution">5,000 MT (Dec shipment) — hold, model forecasts better entry in 10-14 days</span>
+                    </div>
+                  </div>
+                </div>
+
+                <br><strong>Why now:</strong> Our model forecasts Dec26 ICE softening over the next 3 weeks, but basis on Brazilian M36 is tightening due to limited nearby availability. Fixing the Nov shipment now locks in a favorable basis before it widens. Your past fixation data shows your mill tends to delay 2-3 weeks past the optimal window — this recommendation corrects for that pattern.
+
+                <br><br><strong>Dec shipment:</strong> Hold the remaining 5,000 MT. The model projects a better entry point in 10-14 days as futures decline. We'll alert you when conditions align.
+
+                <br><br><strong>Hedging note:</strong> Consider buying Dec26 67-strike puts to protect the Dec shipment while you wait. IV is 18% below seasonal average — puts are cheap.
+
+                <br><strong>Buying Recommendation by Origin:</strong>
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th>Origin</th>
+                      <th>Basis</th>
+                      <th>Forecast</th>
+                      <th>Signal</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>Brazilian M36 G5 28GPT</td>
+                      <td class="highlight">700</td>
+                      <td class="positive">Basis tightening</td>
+                      <td class="positive">BUY</td>
+                    </tr>
+                    <tr>
+                      <td>US M36 G5 28GPT</td>
+                      <td>850</td>
+                      <td class="negative">Basis widening</td>
+                      <td class="negative">HOLD</td>
+                    </tr>
+                    <tr>
+                      <td>Ivory Coast MANBO 35</td>
+                      <td>650</td>
+                      <td class="positive">Stable</td>
+                      <td class="highlight">WATCH</td>
+                    </tr>
+                    <tr>
+                      <td>Argentine SLM 34 G5 27GPT</td>
+                      <td>300</td>
+                      <td>Flat</td>
+                      <td>HOLD</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- INPUT -->
+        <div class="chat-input-area">
+          <div class="chat-input-box">
+            <input type="text" class="chat-input" placeholder="Ask Cotton AI about your procurement, hedging, or market analysis...">
+            <button class="chat-send">→</button>
+          </div>
+          <div class="chat-disclaimer">Cotton AI provides data-driven recommendations. AI can make mistakes — if you're unsure about a recommendation, ask the AI to get it approved by a human data analyst and futures expert at YS Group and Ample Insight.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="features-section">
+  <div class="features-grid">
+    <div class="feature-card">
+      <div class="num">i.</div>
+      <h3>Always on. Always adapting.</h3>
+      <p>Cotton AI is a live engine that continuously monitors ICE futures, basis movements, USDA reports, weather disruptions, and global supply chain events. When conditions change, your recommendations update instantly — no manual refresh, no waiting for a weekly report.</p>
+    </div>
+    <div class="feature-card">
+      <div class="num">ii.</div>
+      <h3>Global event intelligence</h3>
+      <p>A flood in Sindh. A hurricane in Texas. A drought in Ivory Coast. Cotton AI detects supply disruptions in real time and instantly recalculates origin recommendations, price forecasts, and hedging strategies before your broker picks up the phone.</p>
+    </div>
+    <div class="feature-card">
+      <div class="num">iii.</div>
+      <h3>Origin intelligence</h3>
+      <p>Side-by-side comparison of every major cotton origin — basis levels, quality specs, and value scores mapped to your specific yarn requirements.</p>
+    </div>
+    <div class="feature-card">
+      <div class="num">iv.</div>
+      <h3>Hedging engine</h3>
+      <p>Options and futures strategies tailored to your open positions. Calls, puts, collars — with cost analysis and P&L scenarios before you commit.</p>
+    </div>
+    <div class="feature-card">
+      <div class="num">v.</div>
+      <h3>Backtested strategies</h3>
+      <p>Every recommendation is validated against five years of historical market outcomes. See exactly what would have happened before you act.</p>
+    </div>
+    <div class="feature-card">
+      <div class="num">vi.</div>
+      <h3>Your data, your edge</h3>
+      <p>Enterprise clients can train custom models on their own fixation history. The more data you feed, the more precise the recommendations become.</p>
+    </div>
+  </div>
+</section>
+
+</body>
+</html>

@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pilot Clients — Cotton AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #09090B;
+  --bg-elevated: #111113;
+  --bg-card: #16161A;
+  --text: #E4E2DB;
+  --text-dim: #7A7872;
+  --text-muted: #4A4944;
+  --gold: #C8A96E;
+  --gold-bright: #DBBD84;
+  --gold-dim: #8A7545;
+  --green: #4ADE80;
+  --border: rgba(255,255,255,0.06);
+  --border-gold: rgba(200,169,110,0.2);
+  --serif: 'Cormorant Garamond', Georgia, serif;
+  --sans: 'Outfit', -apple-system, sans-serif;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { font-family: var(--sans); color: var(--text); background: var(--bg); overflow-x: hidden; -webkit-font-smoothing: antialiased; }
+body::after {
+  content: ''; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  pointer-events: none; z-index: 9999; opacity: 0.025;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+}
+
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 20px 72px; background: rgba(9,9,11,0.8);
+  backdrop-filter: blur(24px) saturate(1.2); border-bottom: 1px solid var(--border);
+}
+.nav-logo {
+  font-family: var(--sans); font-weight: 600; font-size: 16px;
+  letter-spacing: 3px; text-transform: uppercase; color: var(--gold);
+  display: flex; align-items: center; gap: 12px; text-decoration: none;
+}
+.nav-logo-line { width: 24px; height: 1px; background: var(--gold-dim); }
+.nav-links { display: flex; gap: 40px; list-style: none; }
+.nav-links a {
+  text-decoration: none; color: var(--text-dim); font-size: 13px;
+  font-weight: 400; letter-spacing: 1px; text-transform: uppercase; transition: color 0.3s;
+}
+.nav-links a:hover { color: var(--text); }
+.nav-links a.active { color: var(--gold); }
+.nav-cta {
+  color: var(--gold); border: 1px solid var(--border-gold);
+  padding: 10px 28px; font-size: 12px; letter-spacing: 1.5px;
+  text-transform: uppercase; font-weight: 500;
+  text-decoration: none; transition: all 0.3s; background: transparent;
+}
+.nav-cta:hover { background: rgba(200,169,110,0.08); border-color: var(--gold); }
+
+/* PAGE HERO */
+.page-hero {
+  padding: 180px 72px 80px; position: relative;
+}
+.page-hero::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+  background: radial-gradient(ellipse 50% 60% at 50% 40%, rgba(200,169,110,0.04), transparent);
+  pointer-events: none;
+}
+.page-overline {
+  font-size: 11px; letter-spacing: 4px; text-transform: uppercase;
+  color: var(--gold-dim); font-weight: 500; margin-bottom: 24px;
+  display: flex; align-items: center; gap: 16px; position: relative;
+}
+.page-overline::before { content: ''; width: 24px; height: 1px; background: var(--gold-dim); }
+.page-hero h1 {
+  font-family: var(--serif); font-size: clamp(42px, 5.5vw, 72px);
+  line-height: 1.05; font-weight: 400; color: var(--text);
+  max-width: 900px; letter-spacing: -1px; position: relative; margin-bottom: 24px;
+}
+.page-hero h1 em { font-style: italic; color: var(--gold); }
+.page-hero p {
+  font-size: 17px; color: var(--text-dim); max-width: 600px;
+  line-height: 1.8; font-weight: 300; position: relative;
+}
+.h-rule { height: 1px; background: var(--border); margin: 0 72px; }
+
+/* SECTION */
+section { padding: 120px 72px; }
+.section-overline {
+  font-size: 11px; letter-spacing: 4px; text-transform: uppercase;
+  color: var(--gold-dim); font-weight: 500; margin-bottom: 20px;
+  display: flex; align-items: center; gap: 16px;
+}
+.section-overline::before { content: ''; width: 24px; height: 1px; background: var(--gold-dim); }
+.section-heading {
+  font-family: var(--serif); font-size: clamp(32px, 4vw, 48px);
+  line-height: 1.15; margin-bottom: 24px; max-width: 600px; font-weight: 400;
+}
+
+/* EXCLUSIVE BADGE */
+.exclusive-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  border: 1px solid var(--border-gold); padding: 6px 16px;
+  font-size: 10px; color: var(--gold); letter-spacing: 2px;
+  text-transform: uppercase; margin-bottom: 32px;
+}
+.exclusive-dot {
+  width: 5px; height: 5px; border-radius: 50%; background: var(--gold);
+}
+
+/* CLIENT CARDS */
+.client-section { background: var(--bg); }
+.client-card {
+  max-width: 1100px; margin-bottom: 80px;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 1px;
+  background: var(--border);
+}
+.client-card:last-child { margin-bottom: 0; }
+.client-info {
+  background: var(--bg); padding: 56px 48px;
+}
+.client-stats {
+  background: var(--bg); padding: 56px 48px;
+}
+.client-logo-text {
+  font-family: var(--serif); font-size: 36px; font-weight: 400;
+  color: var(--text); margin-bottom: 8px; letter-spacing: -0.5px;
+}
+.client-ticker {
+  font-size: 12px; letter-spacing: 2px; text-transform: uppercase;
+  color: var(--gold); margin-bottom: 24px; font-weight: 500;
+}
+.client-desc {
+  font-size: 15px; color: var(--text-dim); line-height: 1.8;
+  font-weight: 300; margin-bottom: 28px;
+}
+.client-tags {
+  display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 28px;
+}
+.client-tag {
+  font-size: 11px; letter-spacing: 1px; text-transform: uppercase;
+  color: var(--text-muted); border: 1px solid var(--border);
+  padding: 5px 12px; font-weight: 400;
+}
+.client-exclusive {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 12px; color: var(--gold); letter-spacing: 1px;
+  text-transform: uppercase; font-weight: 500;
+  padding-top: 20px; border-top: 1px solid var(--border);
+}
+.client-exclusive-dot {
+  width: 5px; height: 5px; border-radius: 50%; background: var(--gold);
+}
+
+/* STAT ROWS */
+.stat-rows { }
+.stat-row {
+  display: flex; justify-content: space-between; align-items: baseline;
+  padding: 18px 0; border-bottom: 1px solid var(--border);
+}
+.stat-row:first-child { padding-top: 0; }
+.stat-row:last-child { border: none; }
+.stat-label {
+  font-size: 11px; letter-spacing: 2px; text-transform: uppercase;
+  color: var(--text-muted); font-weight: 400;
+}
+.stat-value {
+  font-family: var(--serif); font-size: 24px; color: var(--text);
+  font-weight: 400;
+}
+.stat-value.gold { color: var(--gold); }
+
+/* WHY SECTION */
+.why-section { background: var(--bg-elevated); }
+.why-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px;
+  background: var(--border); max-width: 1100px;
+}
+.why-card {
+  background: var(--bg-elevated); padding: 44px 36px;
+  transition: background 0.3s;
+}
+.why-card:hover { background: var(--bg-card); }
+.why-card .num {
+  font-family: var(--serif); font-size: 13px; color: var(--gold-dim);
+  font-style: italic; margin-bottom: 16px;
+}
+.why-card h3 {
+  font-family: var(--serif); font-size: 22px; font-weight: 400;
+  margin-bottom: 12px; color: var(--text);
+}
+.why-card p { font-size: 13px; color: var(--text-dim); line-height: 1.7; font-weight: 300; }
+
+/* CTA */
+.cta-section {
+  padding: 140px 72px; text-align: center;
+  background: var(--bg); position: relative;
+}
+.cta-section::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+  background: radial-gradient(ellipse 50% 50% at 50% 50%, rgba(200,169,110,0.03), transparent);
+  pointer-events: none;
+}
+.cta-section .section-heading {
+  margin: 0 auto 20px; max-width: 600px; text-align: center;
+}
+.cta-body {
+  font-size: 16px; color: var(--text-dim); max-width: 520px;
+  margin: 0 auto 40px; line-height: 1.8; font-weight: 300;
+  text-align: center; position: relative;
+}
+.btn-gold {
+  background: var(--gold); color: var(--bg);
+  padding: 16px 36px; font-size: 12px; letter-spacing: 2px;
+  text-transform: uppercase; font-weight: 600;
+  text-decoration: none; border: none; cursor: pointer;
+  transition: all 0.3s; display: inline-block; position: relative;
+}
+.btn-gold:hover { background: var(--gold-bright); transform: translateY(-2px); box-shadow: 0 12px 40px rgba(200,169,110,0.2); }
+
+/* FOOTER */
+footer {
+  padding: 72px; border-top: 1px solid var(--border);
+  display: flex; justify-content: space-between; align-items: flex-start;
+}
+.footer-left { max-width: 280px; }
+.footer-left .nav-logo { margin-bottom: 16px; }
+.footer-left p { font-size: 13px; color: var(--text-muted); line-height: 1.65; font-weight: 300; }
+.footer-cols { display: flex; gap: 80px; }
+.footer-col h5 {
+  font-size: 10px; letter-spacing: 3px; text-transform: uppercase;
+  color: var(--text-muted); margin-bottom: 20px;
+}
+.footer-col a {
+  display: block; font-size: 13px; color: var(--text-dim);
+  text-decoration: none; margin-bottom: 12px; transition: color 0.2s; font-weight: 300;
+}
+.footer-col a:hover { color: var(--gold); }
+.footer-bottom {
+  padding: 24px 72px; border-top: 1px solid var(--border);
+  display: flex; justify-content: space-between;
+  font-size: 11px; color: var(--text-muted); letter-spacing: 0.5px;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.page-overline, .page-hero h1, .page-hero p {
+  animation: fadeUp 0.8s ease-out both;
+}
+.page-hero h1 { animation-delay: 0.1s; }
+.page-hero p { animation-delay: 0.2s; }
+
+@media (max-width: 768px) {
+  nav { padding: 16px 24px; }
+  .nav-links { display: none; }
+  .page-hero, section, .cta-section, footer, .footer-bottom { padding-left: 24px; padding-right: 24px; }
+  .h-rule { margin: 0 24px; }
+  .client-card { grid-template-columns: 1fr; }
+  .why-grid { grid-template-columns: 1fr; }
+  footer { flex-direction: column; gap: 40px; }
+  .footer-cols { gap: 40px; }
+  .footer-bottom { flex-direction: column; gap: 8px; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="nav-logo">
+    <span class="nav-logo-line"></span>
+    Cotton AI
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="solution.html">Solution</a></li>
+    <li><a href="partners.html">Partners</a></li>
+    <li><a href="pricing.html">Pricing</a></li>
+    <li><a href="pilot-clients.html" class="active">Clients</a></li>
+  </ul>
+  <a href="index.html#contact" class="nav-cta">Request Access</a>
+</nav>
+
+<!-- PAGE HERO -->
+<section class="page-hero">
+  <div class="page-overline">Pilot Clients</div>
+  <h1>Trusted by Pakistan's <em>largest textile groups</em></h1>
+  <p>Cotton AI is being deployed with some of the most established names in Pakistani textiles — companies that collectively process hundreds of thousands of tons of raw cotton every year. Both are exclusive YS Group clients.</p>
+</section>
+
+<div class="h-rule"></div>
+
+<!-- CLIENTS -->
+<section class="client-section">
+
+  <!-- NISHAT MILLS LIMITED -->
+  <div class="client-card">
+    <div class="client-info">
+      <div class="client-logo-text">Nishat Mills Limited</div>
+      <div class="client-ticker">PSX: NML</div>
+      <div class="client-desc">
+        The flagship company of the Nishat Group, founded in 1951. Nishat Mills is one of the most modern and largest vertically integrated textile companies in Pakistan. The company operates across spinning, weaving, dyeing, denim, workwear, home textiles, terry products, and garments — with global operations spanning Europe, the Americas, Asia, Africa, and Australia.
+      </div>
+      <div class="client-tags">
+        <span class="client-tag">Spinning</span>
+        <span class="client-tag">Weaving</span>
+        <span class="client-tag">Dyeing</span>
+        <span class="client-tag">Denim</span>
+        <span class="client-tag">Home Textile</span>
+        <span class="client-tag">Garments</span>
+        <span class="client-tag">Power Generation</span>
+      </div>
+      <div class="client-exclusive">
+        <span class="client-exclusive-dot"></span>
+        Exclusive YS Group Client
+      </div>
+    </div>
+    <div class="client-stats">
+      <div class="stat-rows">
+        <div class="stat-row">
+          <span class="stat-label">Founded</span>
+          <span class="stat-value">1951</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">Employees</span>
+          <span class="stat-value">24,700+</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">Revenue</span>
+          <span class="stat-value gold">$711M</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">Headquarters</span>
+          <span class="stat-value">Lahore</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">Listed</span>
+          <span class="stat-value">Pakistan Stock Exchange</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">Cotton AI Status</span>
+          <span class="stat-value gold">Pilot Partner</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- NISHAT CHUNIAN LIMITED -->
+  <div class="client-card">
+    <div class="client-info">
+      <div class="client-logo-text">Nishat Chunian Limited</div>
+      <div class="client-ticker">PSX: NCL</div>
+      <div class="client-desc">
+        Founded in 1990, Nishat Chunian Limited is one of the leading vertically integrated textile companies in Pakistan. NCL operates 8 spinning mills equipped with 225,000 spindles, consuming 85,000 tons of raw cotton annually. The company spans spinning, weaving, dyeing, printing, stitching, and home textiles — with subsidiaries in the USA, UAE, and a growing e-commerce presence through Sweave Inc.
+      </div>
+      <div class="client-tags">
+        <span class="client-tag">Spinning</span>
+        <span class="client-tag">Weaving</span>
+        <span class="client-tag">Dyeing & Printing</span>
+        <span class="client-tag">Home Textiles</span>
+        <span class="client-tag">Stitched Products</span>
+        <span class="client-tag">E-commerce</span>
+      </div>
+      <div class="client-exclusive">
+        <span class="client-exclusive-dot"></span>
+        Exclusive YS Group Client
+      </div>
+    </div>
+    <div class="client-stats">
+      <div class="stat-rows">
+        <div class="stat-row">
+          <span class="stat-label">Founded</span>
+          <span class="stat-value">1990</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">Employees</span>
+          <span class="stat-value">6,300+</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">Revenue</span>
+          <span class="stat-value gold">$321M</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">Spindles</span>
+          <span class="stat-value">225,000</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">Annual Cotton Requirement</span>
+          <span class="stat-value">85,000 tons</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">Cotton AI Status</span>
+          <span class="stat-value gold">Pilot Partner</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+<div class="h-rule"></div>
+
+<!-- WHY THESE CLIENTS -->
+<section class="why-section">
+  <div class="section-overline">Why It Matters</div>
+  <h2 class="section-heading">What pilot partners get</h2>
+  <div class="why-grid">
+    <div class="why-card">
+      <div class="num">i.</div>
+      <h3>Models trained on their data</h3>
+      <p>Pilot partners contribute fixation data that makes Cotton AI's recommendations more precise for their specific operations. The more data they feed, the sharper the edge.</p>
+    </div>
+    <div class="why-card">
+      <div class="num">ii.</div>
+      <h3>First access to new features</h3>
+      <p>Every new capability — hedging engine, origin optimizer, risk profiling — is tested and refined with pilot partners before general release. They shape what gets built.</p>
+    </div>
+    <div class="why-card">
+      <div class="num">iii.</div>
+      <h3>Exclusive pricing for life</h3>
+      <p>Pilot partners lock in founding rates that never increase. As Cotton AI scales and the product matures, their cost stays the same while the value compounds.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <div class="section-overline" style="justify-content:center;"><span style="display:none;"></span>Become a Pilot Client</div>
+  <h2 class="section-heading">Join Nishat Mills and Nishat Chunian</h2>
+  <p class="cta-body">We're selectively onboarding mills with annual cotton procurement of $25–50M+ and a commitment to data-driven decision making. If that's you, let's talk.</p>
+  <a href="mailto:omer.yahya@rotman.utoronto.ca" class="btn-gold">Apply for Pilot Access</a>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-left">
+    <div class="nav-logo">
+      <span class="nav-logo-line"></span>
+      Cotton AI
+    </div>
+    <p>Predictive procurement intelligence for the global textile industry. Incorporated in Canada.</p>
+  </div>
+  <div class="footer-cols">
+    <div class="footer-col">
+      <h5>Product</h5>
+      <a href="solution.html">Solution</a>
+      <a href="pricing.html">Pricing</a>
+      <a href="index.html#data">Our Data</a>
+    </div>
+    <div class="footer-col">
+      <h5>Company</h5>
+      <a href="partners.html">Partners</a>
+      <a href="pilot-clients.html">Clients</a>
+      <a href="#">Careers</a>
+    </div>
+    <div class="footer-col">
+      <h5>Contact</h5>
+      <a href="mailto:omer.yahya@rotman.utoronto.ca">omer.yahya@rotman.utoronto.ca</a>
+      <a href="#">Toronto, Canada</a>
+    </div>
+  </div>
+</footer>
+<div class="footer-bottom">
+  <span>© 2026 Cotton AI Inc.</span>
+  <span>ysintelligence.ai</span>
+</div>
+
+</body>
+</html>
