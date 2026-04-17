@@ -292,6 +292,7 @@ footer {
   .footer-bottom { flex-direction: column; gap: 8px; }
 }
 </style>
+<link rel="stylesheet" href="mobile-overrides.css">
 </head>
 <body>
 
@@ -301,15 +302,22 @@ footer {
     <span class="nav-logo-line"></span>
     Cotton AI
   </a>
-  <ul class="nav-links">
-    <li><a href="Cotton_AI_Homepage_Dark.html">Home</a></li>
-    <li><a href="Cotton_AI_Solution.html">Solution</a></li>
-    <li><a href="Cotton_AI_Customize.html">Customize</a></li>
-    <li><a href="Cotton_AI_Pricing.html" class="active">Pricing</a></li>
-    <li><a href="Cotton_AI_Partners.html">Partners</a></li>
-    <li><a href="Cotton_AI_Pilot_Clients.html">Clients</a></li>
-  </ul>
-  <a href="Cotton_AI_Homepage_Dark.html#contact" class="nav-cta">Request Access</a>
+  <button class="nav-toggle" type="button" aria-label="Toggle navigation menu">
+    <span class="nav-toggle-line"></span>
+    <span class="nav-toggle-line"></span>
+    <span class="nav-toggle-line"></span>
+  </button>
+  <div class="nav-panel">
+    <ul class="nav-links">
+      <li><a href="Cotton_AI_Homepage_Dark.html">Home</a></li>
+      <li><a href="Cotton_AI_Solution.html">Solution</a></li>
+      <li><a href="Cotton_AI_Customize.html">Customize</a></li>
+      <li><a href="Cotton_AI_Pricing.html" class="active">Pricing</a></li>
+      <li><a href="Cotton_AI_Partners.html">Partners</a></li>
+      <li><a href="Cotton_AI_Pilot_Clients.html">Clients</a></li>
+    </ul>
+    <a href="Cotton_AI_Homepage_Dark.html#contact" class="nav-cta">Request Access</a>
+  </div>
 </nav>
 
 <!-- PAGE HERO -->
@@ -407,15 +415,15 @@ footer {
 </section>
 
 <!-- FREE TRIAL & YS GROUP OFFER -->
-<section style="padding: 80px 72px; border-top: 1px solid rgba(255,255,255,0.06);">
-  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: rgba(255,255,255,0.06); max-width: 900px;">
-    <div style="background: #09090B; padding: 48px 40px;">
+<section class="offers-section">
+  <div class="offers-grid">
+    <div class="offers-card">
       <div style="font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: #8A7545; margin-bottom: 12px; font-weight: 500;">Free Trial</div>
       <h3 style="font-family: 'Cormorant Garamond', serif; font-size: 28px; font-weight: 400; color: #E4E2DB; margin-bottom: 16px;">Try before you commit</h3>
       <p style="font-size: 14px; color: #7A7872; line-height: 1.7; font-weight: 300; margin-bottom: 24px;">Request a free demo and trial installation for your mill — no commitment, no credit card. Run Cotton AI alongside your existing procurement process for up to 1 year and see the results for yourself.</p>
       <a href="mailto:omer.yahya@rotman.utoronto.ca" style="display: inline-flex; align-items: center; gap: 8px; font-size: 12px; letter-spacing: 1.5px; text-transform: uppercase; color: #C8A96E; text-decoration: none; font-weight: 500;">Request Free Demo →</a>
     </div>
-    <div style="background: #09090B; padding: 48px 40px;">
+    <div class="offers-card">
       <div style="font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: #8A7545; margin-bottom: 12px; font-weight: 500;">YS Group Clients</div>
       <h3 style="font-family: 'Cormorant Garamond', serif; font-size: 28px; font-weight: 400; color: #E4E2DB; margin-bottom: 16px;">Free for qualified buyers</h3>
       <p style="font-size: 14px; color: #7A7872; line-height: 1.7; font-weight: 300; margin-bottom: 24px;">Mills purchasing 20,000 MT or more through YS Group receive full access to Cotton AI at no cost. The product is built on your data — you should benefit from it.</p>
@@ -515,5 +523,6 @@ footer {
   <span>ysintelligence.ai</span>
 </div>
 
+<script src="mobile-nav.js"></script>
 </body>
 </html>

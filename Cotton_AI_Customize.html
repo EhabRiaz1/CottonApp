@@ -357,21 +357,29 @@ footer {
   .footer-bottom { flex-direction: column; gap: 8px; }
 }
 </style>
+<link rel="stylesheet" href="mobile-overrides.css">
 </head>
 <body>
 
 <!-- NAV -->
 <nav>
   <a href="Cotton_AI_Homepage_Dark.html" class="nav-logo"><span class="nav-logo-line"></span>Cotton AI</a>
-  <ul class="nav-links">
-    <li><a href="Cotton_AI_Homepage_Dark.html">Home</a></li>
-    <li><a href="Cotton_AI_Solution.html">Solution</a></li>
-    <li><a href="Cotton_AI_Customize.html" class="active">Customize</a></li>
-    <li><a href="Cotton_AI_Pricing.html">Pricing</a></li>
-    <li><a href="Cotton_AI_Partners.html">Partners</a></li>
-    <li><a href="Cotton_AI_Pilot_Clients.html">Clients</a></li>
-  </ul>
-  <a href="Cotton_AI_Homepage_Dark.html#contact" class="nav-cta">Request Access</a>
+  <button class="nav-toggle" type="button" aria-label="Toggle navigation menu">
+    <span class="nav-toggle-line"></span>
+    <span class="nav-toggle-line"></span>
+    <span class="nav-toggle-line"></span>
+  </button>
+  <div class="nav-panel">
+    <ul class="nav-links">
+      <li><a href="Cotton_AI_Homepage_Dark.html">Home</a></li>
+      <li><a href="Cotton_AI_Solution.html">Solution</a></li>
+      <li><a href="Cotton_AI_Customize.html" class="active">Customize</a></li>
+      <li><a href="Cotton_AI_Pricing.html">Pricing</a></li>
+      <li><a href="Cotton_AI_Partners.html">Partners</a></li>
+      <li><a href="Cotton_AI_Pilot_Clients.html">Clients</a></li>
+    </ul>
+    <a href="Cotton_AI_Homepage_Dark.html#contact" class="nav-cta">Request Access</a>
+  </div>
 </nav>
 
 <!-- PAGE HERO -->
@@ -384,7 +392,7 @@ footer {
 <div class="h-rule"></div>
 
 <!-- FEATURE 1: UI CUSTOMIZATION -->
-<section style="padding: 100px 72px;">
+<section class="feature-section">
   <div class="feature-block">
     <div class="feature-content">
       <div class="feature-num">i.</div>
@@ -433,7 +441,7 @@ footer {
 </section>
 
 <!-- FEATURE 2: AUTO FIXATION -->
-<section style="padding: 0 72px 100px;">
+<section class="feature-section-tight">
   <div class="feature-block">
     <div class="feature-visual">
       <div class="mock-panel">
@@ -482,7 +490,7 @@ footer {
 </section>
 
 <!-- FEATURE 3: AUTO TRADING -->
-<section style="padding: 0 72px 100px;">
+<section class="feature-section-tight">
   <div class="feature-block">
     <div class="feature-content">
       <div class="feature-num">iii.</div>
@@ -537,7 +545,7 @@ footer {
 </section>
 
 <!-- FEATURE 4: VOICE CONTROL -->
-<section style="padding: 0 72px 120px;">
+<section class="feature-section-last">
   <div class="feature-block">
     <div class="feature-visual">
       <div class="mock-panel">
@@ -623,5 +631,6 @@ footer {
   <span>ysintelligence.ai</span>
 </div>
 
+<script src="mobile-nav.js"></script>
 </body>
 </html>

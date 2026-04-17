@@ -353,23 +353,32 @@ nav {
   .features-grid { grid-template-columns: 1fr; }
 }
 </style>
+<link rel="stylesheet" href="mobile-overrides.css">
 </head>
 <body>
 
 <!-- NAV -->
 <nav>
-  <a href="index.html" class="nav-logo">
+  <a href="Cotton_AI_Homepage_Dark.html" class="nav-logo">
     <span class="nav-logo-line"></span>
     Cotton AI
   </a>
-  <ul class="nav-links">
-    <li><a href="index.html">Home</a></li>
-    <li><a href="solution.html" class="active">Solution</a></li>
-    <li><a href="partners.html">Partners</a></li>
-    <li><a href="index.html#pricing">Pricing</a></li>
-    <li><a href="index.html#contact">Contact</a></li>
-  </ul>
-  <a href="index.html#contact" class="nav-cta">Request Access</a>
+  <button class="nav-toggle" type="button" aria-label="Toggle navigation menu">
+    <span class="nav-toggle-line"></span>
+    <span class="nav-toggle-line"></span>
+    <span class="nav-toggle-line"></span>
+  </button>
+  <div class="nav-panel">
+    <ul class="nav-links">
+      <li><a href="Cotton_AI_Homepage_Dark.html">Home</a></li>
+      <li><a href="Cotton_AI_Solution.html" class="active">Solution</a></li>
+      <li><a href="Cotton_AI_Customize.html">Customize</a></li>
+      <li><a href="Cotton_AI_Pricing.html">Pricing</a></li>
+      <li><a href="Cotton_AI_Partners.html">Partners</a></li>
+      <li><a href="Cotton_AI_Pilot_Clients.html">Clients</a></li>
+    </ul>
+    <a href="Cotton_AI_Homepage_Dark.html#contact" class="nav-cta">Request Access</a>
+  </div>
 </nav>
 
 <!-- PAGE HERO -->
@@ -612,5 +621,6 @@ nav {
   </div>
 </section>
 
+<script src="mobile-nav.js"></script>
 </body>
 </html>

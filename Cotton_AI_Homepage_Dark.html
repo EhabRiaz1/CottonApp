@@ -457,6 +457,7 @@ footer {
   .data-monument .big { font-size: 72px; }
 }
 </style>
+<link rel="stylesheet" href="mobile-overrides.css">
 </head>
 <body>
 
@@ -466,15 +467,22 @@ footer {
     <span class="nav-logo-line"></span>
     Cotton AI
   </a>
-  <ul class="nav-links">
-    <li><a href="Cotton_AI_Homepage_Dark.html" class="active">Home</a></li>
-    <li><a href="Cotton_AI_Solution.html">Solution</a></li>
-    <li><a href="Cotton_AI_Customize.html">Customize</a></li>
-    <li><a href="Cotton_AI_Pricing.html">Pricing</a></li>
-    <li><a href="Cotton_AI_Partners.html">Partners</a></li>
-    <li><a href="Cotton_AI_Pilot_Clients.html">Clients</a></li>
-  </ul>
-  <a href="#contact" class="nav-cta">Request Access</a>
+  <button class="nav-toggle" type="button" aria-label="Toggle navigation menu">
+    <span class="nav-toggle-line"></span>
+    <span class="nav-toggle-line"></span>
+    <span class="nav-toggle-line"></span>
+  </button>
+  <div class="nav-panel">
+    <ul class="nav-links">
+      <li><a href="Cotton_AI_Homepage_Dark.html" class="active">Home</a></li>
+      <li><a href="Cotton_AI_Solution.html">Solution</a></li>
+      <li><a href="Cotton_AI_Customize.html">Customize</a></li>
+      <li><a href="Cotton_AI_Pricing.html">Pricing</a></li>
+      <li><a href="Cotton_AI_Partners.html">Partners</a></li>
+      <li><a href="Cotton_AI_Pilot_Clients.html">Clients</a></li>
+    </ul>
+    <a href="#contact" class="nav-cta">Request Access</a>
+  </div>
 </nav>
 
 <!-- HERO -->
@@ -707,5 +715,6 @@ footer {
   <span>ysintelligence.ai</span>
 </div>
 
+<script src="mobile-nav.js"></script>
 </body>
 </html>
