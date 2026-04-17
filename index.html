@@ -1,11 +1,720 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta http-equiv="refresh" content="0; url=Cotton_AI_Homepage_Dark.html" />
-  <title>Cotton AI</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cotton AI — Predictive Procurement Intelligence</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #09090B;
+  --bg-elevated: #111113;
+  --bg-card: #16161A;
+  --bg-card-hover: #1C1C21;
+  --text: #E4E2DB;
+  --text-dim: #7A7872;
+  --text-muted: #4A4944;
+  --gold: #C8A96E;
+  --gold-bright: #DBBD84;
+  --gold-dim: #8A7545;
+  --green-signal: #4ADE80;
+  --amber-signal: #FBBF24;
+  --blue-signal: #60A5FA;
+  --red-signal: #F87171;
+  --border: rgba(255,255,255,0.06);
+  --border-gold: rgba(200,169,110,0.2);
+  --serif: 'Cormorant Garamond', Georgia, serif;
+  --sans: 'Outfit', -apple-system, sans-serif;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--sans); color: var(--text); background: var(--bg);
+  overflow-x: hidden; -webkit-font-smoothing: antialiased;
+}
+
+/* GRAIN OVERLAY */
+body::after {
+  content: '';
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  pointer-events: none; z-index: 9999; opacity: 0.025;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+}
+
+/* NAV */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 20px 72px;
+  background: rgba(9,9,11,0.8);
+  backdrop-filter: blur(24px) saturate(1.2);
+  border-bottom: 1px solid var(--border);
+}
+.nav-logo {
+  font-family: var(--sans); font-weight: 600; font-size: 16px;
+  letter-spacing: 3px; text-transform: uppercase; color: var(--gold);
+  display: flex; align-items: center; gap: 12px;
+}
+.nav-logo-line { width: 24px; height: 1px; background: var(--gold-dim); }
+.nav-links { display: flex; gap: 40px; list-style: none; }
+.nav-links a {
+  text-decoration: none; color: var(--text-dim); font-size: 13px;
+  font-weight: 400; letter-spacing: 1px; text-transform: uppercase;
+  transition: color 0.3s;
+}
+.nav-links a:hover { color: var(--text); }
+.nav-cta {
+  color: var(--gold); border: 1px solid var(--border-gold);
+  padding: 10px 28px; font-size: 12px; letter-spacing: 1.5px;
+  text-transform: uppercase; font-weight: 500;
+  text-decoration: none; transition: all 0.3s; background: transparent;
+  cursor: pointer;
+}
+.nav-cta:hover { background: rgba(200,169,110,0.08); border-color: var(--gold); }
+
+/* HERO */
+.hero {
+  min-height: 100vh; display: flex; flex-direction: column;
+  justify-content: center; padding: 160px 72px 120px;
+  position: relative;
+}
+.hero::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+  background:
+    radial-gradient(ellipse 50% 50% at 20% 50%, rgba(200,169,110,0.04), transparent),
+    radial-gradient(ellipse 40% 60% at 80% 30%, rgba(200,169,110,0.02), transparent);
+  pointer-events: none;
+}
+.hero-overline {
+  font-size: 11px; letter-spacing: 4px; text-transform: uppercase;
+  color: var(--gold-dim); font-weight: 500; margin-bottom: 32px;
+  display: flex; align-items: center; gap: 16px;
+  position: relative;
+}
+.hero-overline::before {
+  content: ''; width: 40px; height: 1px; background: var(--gold-dim);
+}
+.hero h1 {
+  font-family: var(--serif); font-size: clamp(52px, 7.5vw, 96px);
+  line-height: 1.0; font-weight: 400; color: var(--text);
+  max-width: 1000px; margin-bottom: 36px; position: relative;
+  letter-spacing: -1px;
+}
+.hero h1 em {
+  font-style: italic; color: var(--gold);
+}
+.hero-sub {
+  font-size: 17px; color: var(--text-dim); max-width: 520px;
+  line-height: 1.8; margin-bottom: 56px; font-weight: 300;
+  position: relative;
+}
+.hero-ctas { display: flex; gap: 20px; position: relative; }
+.btn-gold {
+  background: var(--gold); color: var(--bg);
+  padding: 16px 36px; font-size: 12px; letter-spacing: 2px;
+  text-transform: uppercase; font-weight: 600;
+  text-decoration: none; border: none; cursor: pointer;
+  transition: all 0.3s;
+}
+.btn-gold:hover { background: var(--gold-bright); transform: translateY(-2px); box-shadow: 0 12px 40px rgba(200,169,110,0.2); }
+.btn-outline {
+  background: transparent; color: var(--text-dim);
+  padding: 16px 36px; font-size: 12px; letter-spacing: 2px;
+  text-transform: uppercase; font-weight: 500;
+  text-decoration: none; border: 1px solid var(--border);
+  cursor: pointer; transition: all 0.3s;
+}
+.btn-outline:hover { border-color: var(--text-dim); color: var(--text); }
+
+/* HORIZONTAL RULE */
+.h-rule {
+  height: 1px; background: var(--border); margin: 0 72px;
+}
+
+/* METRICS BAR */
+.metrics {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  padding: 72px;
+  gap: 0;
+}
+.metric {
+  padding: 0 40px;
+  border-right: 1px solid var(--border);
+}
+.metric:first-child { padding-left: 0; }
+.metric:last-child { border: none; padding-right: 0; }
+.metric-value {
+  font-family: var(--serif); font-size: 56px; font-weight: 400;
+  color: var(--gold); line-height: 1; margin-bottom: 12px;
+  letter-spacing: -1px;
+}
+.metric-label {
+  font-size: 12px; color: var(--text-muted); letter-spacing: 2px;
+  text-transform: uppercase; line-height: 1.6;
+}
+
+/* SECTIONS */
+section { padding: 120px 72px; }
+.section-overline {
+  font-size: 11px; letter-spacing: 4px; text-transform: uppercase;
+  color: var(--gold-dim); font-weight: 500; margin-bottom: 20px;
+  display: flex; align-items: center; gap: 16px;
+}
+.section-overline::before {
+  content: ''; width: 24px; height: 1px; background: var(--gold-dim);
+}
+.section-heading {
+  font-family: var(--serif); font-size: clamp(36px, 4.5vw, 58px);
+  line-height: 1.1; margin-bottom: 24px; max-width: 700px;
+  font-weight: 400; letter-spacing: -0.5px;
+}
+.section-body {
+  font-size: 16px; color: var(--text-dim); line-height: 1.8;
+  max-width: 560px; margin-bottom: 56px; font-weight: 300;
+}
+
+/* PROBLEM */
+.problem { background: var(--bg); }
+.problem-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px;
+  background: var(--border); max-width: 1100px;
+}
+.problem-card {
+  background: var(--bg); padding: 48px 40px;
+  transition: background 0.4s;
+}
+.problem-card:hover { background: var(--bg-elevated); }
+.problem-card .index {
+  font-family: var(--serif); font-size: 14px; color: var(--gold-dim);
+  margin-bottom: 24px; font-style: italic;
+}
+.problem-card h3 {
+  font-family: var(--serif); font-size: 24px; font-weight: 400;
+  margin-bottom: 16px; color: var(--text); line-height: 1.25;
+}
+.problem-card p { font-size: 14px; color: var(--text-dim); line-height: 1.7; font-weight: 300; }
+
+/* SOLUTION */
+.solution { background: var(--bg-elevated); }
+.solution-layout {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 100px;
+  align-items: start; max-width: 1200px;
+}
+.solution-features { list-style: none; }
+.solution-features li {
+  padding: 28px 0; border-bottom: 1px solid var(--border);
+}
+.solution-features li:last-child { border: none; }
+.feature-num {
+  font-family: var(--serif); font-size: 13px; color: var(--gold-dim);
+  font-style: italic; margin-bottom: 8px;
+}
+.solution-features h4 {
+  font-size: 17px; font-weight: 500; margin-bottom: 8px;
+  color: var(--text); letter-spacing: 0.2px;
+}
+.solution-features p { font-size: 14px; color: var(--text-dim); line-height: 1.65; font-weight: 300; }
+
+/* TERMINAL MOCK */
+.terminal {
+  background: var(--bg); border: 1px solid var(--border);
+  border-radius: 2px; overflow: hidden; position: sticky; top: 120px;
+}
+.terminal-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 20px;
+  background: rgba(255,255,255,0.02);
+  border-bottom: 1px solid var(--border);
+}
+.terminal-dots { display: flex; gap: 6px; }
+.terminal-dots span { width: 8px; height: 8px; border-radius: 50%; background: var(--text-muted); }
+.terminal-title { font-size: 11px; color: var(--text-muted); letter-spacing: 2px; text-transform: uppercase; }
+.terminal-body { padding: 24px; }
+
+.signal-row {
+  display: flex; align-items: flex-start; gap: 16px;
+  padding: 18px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.03);
+}
+.signal-row:last-child { border: none; }
+.signal-indicator {
+  width: 6px; height: 6px; border-radius: 50%; margin-top: 7px; flex-shrink: 0;
+}
+.signal-buy { background: var(--green-signal); box-shadow: 0 0 8px rgba(74,222,128,0.4); }
+.signal-hedge { background: var(--blue-signal); box-shadow: 0 0 8px rgba(96,165,250,0.4); }
+.signal-wait { background: var(--amber-signal); box-shadow: 0 0 8px rgba(251,191,36,0.4); }
+.signal-content { flex: 1; }
+.signal-meta {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 6px;
+}
+.signal-type { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; font-weight: 600; }
+.signal-type.buy { color: var(--green-signal); }
+.signal-type.hedge { color: var(--blue-signal); }
+.signal-type.wait { color: var(--amber-signal); }
+.signal-time { font-size: 10px; color: var(--text-muted); letter-spacing: 1px; }
+.signal-text { font-size: 13px; color: var(--text-dim); line-height: 1.55; }
+.signal-text strong { color: var(--text); font-weight: 500; }
+.signal-conf {
+  margin-top: 8px; display: flex; align-items: center; gap: 8px;
+}
+.conf-bar {
+  flex: 1; height: 2px; background: rgba(255,255,255,0.06);
+  border-radius: 1px; overflow: hidden;
+}
+.conf-fill { height: 100%; border-radius: 1px; }
+.conf-fill.high { background: var(--green-signal); width: 87%; }
+.conf-fill.med { background: var(--blue-signal); width: 72%; }
+.conf-fill.low { background: var(--amber-signal); width: 64%; }
+.conf-label { font-size: 10px; color: var(--text-muted); letter-spacing: 1px; white-space: nowrap; }
+
+/* DATA MOAT */
+.data-section { background: var(--bg); position: relative; }
+.data-section::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+  background: radial-gradient(ellipse 60% 50% at 70% 50%, rgba(200,169,110,0.03), transparent);
+  pointer-events: none;
+}
+.data-layout {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 100px;
+  align-items: center; max-width: 1200px; position: relative;
+}
+.data-monument { text-align: center; }
+.data-monument .big {
+  font-family: var(--serif); font-size: 120px; font-weight: 400;
+  color: var(--gold); line-height: 0.9; letter-spacing: -4px;
+}
+.data-monument .big span { font-size: 60px; }
+.data-monument .sub {
+  font-size: 13px; color: var(--text-dim); letter-spacing: 3px;
+  text-transform: uppercase; margin-top: 16px;
+}
+.data-monument .source-tag {
+  display: inline-block; margin-top: 24px;
+  border: 1px solid var(--border-gold); padding: 6px 20px;
+  font-size: 11px; color: var(--gold); letter-spacing: 2px;
+  text-transform: uppercase;
+}
+.data-list { list-style: none; }
+.data-list li {
+  padding: 18px 0; border-bottom: 1px solid var(--border);
+  font-size: 15px; color: var(--text-dim); line-height: 1.65;
+  font-weight: 300; display: flex; gap: 16px;
+}
+.data-list li::before {
+  content: ''; width: 16px; height: 1px; background: var(--gold-dim);
+  flex-shrink: 0; margin-top: 11px;
+}
+
+/* PRICING */
+.pricing-section { background: var(--bg-elevated); }
+.pricing-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px;
+  background: var(--border); max-width: 1100px;
+}
+.pricing-card {
+  background: var(--bg-elevated); padding: 48px 40px;
+  position: relative; transition: background 0.3s;
+}
+.pricing-card:hover { background: var(--bg-card); }
+.pricing-card.featured { background: var(--bg-card); }
+.pricing-card.featured::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0;
+  height: 2px; background: linear-gradient(90deg, var(--gold-dim), var(--gold), var(--gold-dim));
+}
+.pricing-tier {
+  font-size: 11px; letter-spacing: 3px; text-transform: uppercase;
+  color: var(--text-muted); margin-bottom: 8px;
+}
+.pricing-name {
+  font-family: var(--serif); font-size: 32px; font-weight: 400;
+  margin-bottom: 24px; color: var(--text);
+}
+.pricing-amount {
+  font-size: 36px; font-weight: 600; color: var(--gold);
+  margin-bottom: 4px; letter-spacing: -1px;
+}
+.pricing-amount span { font-size: 14px; font-weight: 300; color: var(--text-dim); }
+.pricing-annual { font-size: 12px; color: var(--text-muted); margin-bottom: 32px; letter-spacing: 0.5px; }
+.pricing-list { list-style: none; margin-bottom: 36px; }
+.pricing-list li {
+  font-size: 13px; color: var(--text-dim); padding: 9px 0;
+  display: flex; gap: 12px; align-items: flex-start;
+  line-height: 1.5; font-weight: 300;
+  border-bottom: 1px solid rgba(255,255,255,0.03);
+}
+.pricing-list li:last-child { border: none; }
+.pricing-list li::before { content: '+'; color: var(--gold-dim); font-weight: 400; }
+.pricing-btn {
+  display: block; text-align: center; padding: 14px;
+  font-size: 11px; letter-spacing: 2px; text-transform: uppercase;
+  font-weight: 600; cursor: pointer; transition: all 0.3s;
+  text-decoration: none; width: 100%;
+  border: 1px solid var(--border); color: var(--text-dim); background: transparent;
+}
+.pricing-btn:hover { border-color: var(--gold-dim); color: var(--gold); }
+.pricing-card.featured .pricing-btn {
+  background: var(--gold); color: var(--bg); border-color: var(--gold);
+}
+.pricing-card.featured .pricing-btn:hover { background: var(--gold-bright); }
+
+/* PARTNERS */
+.partners-section { background: var(--bg); }
+.partners-grid {
+  display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px;
+  background: var(--border); max-width: 700px;
+}
+.partner-card {
+  background: var(--bg); padding: 48px 36px;
+  transition: background 0.3s;
+}
+.partner-card:hover { background: var(--bg-elevated); }
+.partner-card h4 {
+  font-family: var(--serif); font-size: 22px; font-weight: 400;
+  color: var(--text); margin-bottom: 4px;
+}
+.partner-role {
+  font-size: 11px; color: var(--gold-dim); letter-spacing: 2px;
+  text-transform: uppercase; margin-bottom: 20px;
+}
+.partner-card p { font-size: 13px; color: var(--text-dim); line-height: 1.65; font-weight: 300; }
+
+/* CTA */
+.cta-final {
+  padding: 160px 72px; text-align: center;
+  background: var(--bg-elevated); position: relative;
+}
+.cta-final::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+  background: radial-gradient(ellipse 50% 50% at 50% 50%, rgba(200,169,110,0.04), transparent);
+  pointer-events: none;
+}
+.cta-final .section-heading { margin-left: auto; margin-right: auto; max-width: 600px; text-align: center; }
+.cta-final .section-body { margin-left: auto; margin-right: auto; text-align: center; }
+.cta-buttons { display: flex; gap: 20px; justify-content: center; position: relative; }
+
+/* FOOTER */
+footer {
+  padding: 72px; border-top: 1px solid var(--border);
+  display: flex; justify-content: space-between; align-items: flex-start;
+}
+.footer-left { max-width: 280px; }
+.footer-left .nav-logo { margin-bottom: 16px; }
+.footer-left p { font-size: 13px; color: var(--text-muted); line-height: 1.65; font-weight: 300; }
+.footer-cols { display: flex; gap: 80px; }
+.footer-col h5 {
+  font-size: 10px; letter-spacing: 3px; text-transform: uppercase;
+  color: var(--text-muted); margin-bottom: 20px;
+}
+.footer-col a {
+  display: block; font-size: 13px; color: var(--text-dim);
+  text-decoration: none; margin-bottom: 12px; transition: color 0.2s;
+  font-weight: 300;
+}
+.footer-col a:hover { color: var(--gold); }
+.footer-bottom {
+  padding: 24px 72px; border-top: 1px solid var(--border);
+  display: flex; justify-content: space-between;
+  font-size: 11px; color: var(--text-muted); letter-spacing: 0.5px;
+}
+
+/* ANIMATIONS */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes lineGrow {
+  from { width: 0; }
+  to { width: 40px; }
+}
+.hero-overline, .hero h1, .hero-sub, .hero-ctas {
+  animation: fadeIn 1s ease-out both;
+}
+.hero h1 { animation-delay: 0.15s; }
+.hero-sub { animation-delay: 0.3s; }
+.hero-ctas { animation-delay: 0.45s; }
+.hero-overline::before { animation: lineGrow 0.8s ease-out 0.6s both; }
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  nav { padding: 16px 24px; }
+  .nav-links { display: none; }
+  section, .metrics, footer, .cta-final, .footer-bottom { padding-left: 24px; padding-right: 24px; }
+  .hero { padding: 140px 24px 100px; }
+  .h-rule { margin: 0 24px; }
+  .metrics { grid-template-columns: repeat(2, 1fr); gap: 32px; }
+  .metric { border: none; padding: 0; }
+  .problem-grid, .pricing-grid, .partners-grid { grid-template-columns: 1fr; }
+  .solution-layout, .data-layout { grid-template-columns: 1fr; gap: 48px; }
+  .terminal { position: static; }
+  footer { flex-direction: column; gap: 40px; }
+  .footer-cols { gap: 40px; }
+  .footer-bottom { flex-direction: column; gap: 8px; }
+  .data-monument .big { font-size: 72px; }
+}
+</style>
+<link rel="stylesheet" href="mobile-overrides.css">
 </head>
 <body>
-  <p>Redirecting... <a href="Cotton_AI_Homepage_Dark.html">Click here if not redirected.</a></p>
+
+<!-- NAV -->
+<nav>
+  <a href="/" class="nav-logo">
+    <span class="nav-logo-line"></span>
+    Cotton AI
+  </a>
+  <button class="nav-toggle" type="button" aria-label="Toggle navigation menu">
+    <span class="nav-toggle-line"></span>
+    <span class="nav-toggle-line"></span>
+    <span class="nav-toggle-line"></span>
+  </button>
+  <div class="nav-panel">
+    <ul class="nav-links">
+      <li><a href="/" class="active">Home</a></li>
+      <li><a href="Cotton_AI_Solution.html">Solution</a></li>
+      <li><a href="Cotton_AI_Customize.html">Customize</a></li>
+      <li><a href="Cotton_AI_Pricing.html">Pricing</a></li>
+      <li><a href="Cotton_AI_Partners.html">Partners</a></li>
+      <li><a href="Cotton_AI_Pilot_Clients.html">Clients</a></li>
+    </ul>
+    <a href="#contact" class="nav-cta">Request Access</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-overline">Cotton AI Inc. — Toronto, Canada</div>
+  <h1>Predictive intelligence for <em>cotton procurement</em></h1>
+  <p class="hero-sub">We tell textile mills when to buy, which origin to source, and how to hedge — powered by the largest proprietary fixation dataset in the industry.</p>
+  <div class="hero-ctas">
+    <a href="#contact" class="btn-gold">Request Early Access</a>
+    <a href="#solution" class="btn-outline">Explore the Platform</a>
+  </div>
+</section>
+
+<!-- METRICS -->
+<div class="h-rule"></div>
+<div class="metrics">
+  <div class="metric">
+    <div class="metric-value">1M+</div>
+    <div class="metric-label">Metric Tons<br>Fixation Data</div>
+  </div>
+  <div class="metric">
+    <div class="metric-value">5 yrs</div>
+    <div class="metric-label">Proprietary<br>Procurement History</div>
+  </div>
+  <div class="metric">
+    <div class="metric-value">7+</div>
+    <div class="metric-label">Cotton Origins<br>Modeled</div>
+  </div>
+  <div class="metric">
+    <div class="metric-value">$50M+</div>
+    <div class="metric-label">Target Mill<br>Annual Cotton Buy</div>
+  </div>
+</div>
+<div class="h-rule"></div>
+
+<!-- PROBLEM -->
+<section class="problem" id="problem">
+  <div class="section-overline">The Problem</div>
+  <h2 class="section-heading">Billions in cotton. Bought on gut feel.</h2>
+  <p class="section-body">Textile mills make procurement decisions worth millions every year with no predictive tools, no systematic backtesting, and no integration between futures markets and physical buying.</p>
+  <div class="problem-grid">
+    <div class="problem-card">
+      <div class="index">i.</div>
+      <h3>No timing framework</h3>
+      <p>Mills rely on broker calls and market sentiment — not data. A single mistimed fixation on a large cargo can cost hundreds of thousands.</p>
+    </div>
+    <div class="problem-card">
+      <div class="index">ii.</div>
+      <h3>Origin selection by habit</h3>
+      <p>Same origins year after year without analyzing which cotton-quality combinations deliver the best value for specific yarn requirements.</p>
+    </div>
+    <div class="problem-card">
+      <div class="index">iii.</div>
+      <h3>Hedging is an afterthought</h3>
+      <p>Most mills don't hedge or hedge inconsistently. Price crashes like 2022–23 hit unprotected mills with devastating impact.</p>
+    </div>
+  </div>
+</section>
+
+<!-- SOLUTION -->
+<section class="solution" id="solution">
+  <div class="solution-layout">
+    <div>
+      <div class="section-overline">The Platform</div>
+      <h2 class="section-heading">What to do — not just where the market is going</h2>
+      <p class="section-body">Cotton AI recommends specific procurement actions tailored to your mill's requirements, risk appetite, and fixation schedule.</p>
+      <ul class="solution-features">
+        <li>
+          <div class="feature-num">01</div>
+          <h4>Procurement Signals</h4>
+          <p>Daily buy, wait, and hedge recommendations based on your mill's buying windows and open contract positions.</p>
+        </li>
+        <li>
+          <div class="feature-num">02</div>
+          <h4>Origin Optimization</h4>
+          <p>Which origins and grades deliver the best value for your yarn specs — US, Brazilian, Ivory Coast, or Argentine.</p>
+        </li>
+        <li>
+          <div class="feature-num">03</div>
+          <h4>Hedging Engine</h4>
+          <p>Options and futures strategies tailored to your book. Calls, puts, collars — backtested against real market scenarios.</p>
+        </li>
+        <li>
+          <div class="feature-num">04</div>
+          <h4>Backtested Strategies</h4>
+          <p>Every recommendation validated against historical outcomes. See what would have happened before you commit capital.</p>
+        </li>
+      </ul>
+    </div>
+    <div class="terminal">
+      <div class="terminal-header">
+        <div class="terminal-dots"><span></span><span></span><span></span></div>
+        <div class="terminal-title">Live Signals</div>
+      </div>
+      <div class="terminal-body">
+        <div class="signal-row">
+          <div class="signal-indicator signal-buy"></div>
+          <div class="signal-content">
+            <div class="signal-meta">
+              <span class="signal-type buy">Buy</span>
+              <span class="signal-time">14:32 UTC</span>
+            </div>
+            <div class="signal-text">Fix <strong>Brazilian M36 G5 28GPT</strong> at <strong>700 on Dec26</strong>. Nov/Dec SO equally. Basis 40 pts below 90-day avg.</div>
+            <div class="signal-conf">
+              <div class="conf-bar"><div class="conf-fill high"></div></div>
+              <div class="conf-label">87%</div>
+            </div>
+          </div>
+        </div>
+        <div class="signal-row">
+          <div class="signal-indicator signal-hedge"></div>
+          <div class="signal-content">
+            <div class="signal-meta">
+              <span class="signal-type hedge">Hedge</span>
+              <span class="signal-time">11:05 UTC</span>
+            </div>
+            <div class="signal-text">Buy <strong>Dec26 67-strike puts</strong>. IV 18% below seasonal avg. Cost: <strong>1.43 cts/lb</strong>.</div>
+            <div class="signal-conf">
+              <div class="conf-bar"><div class="conf-fill med"></div></div>
+              <div class="conf-label">72%</div>
+            </div>
+          </div>
+        </div>
+        <div class="signal-row">
+          <div class="signal-indicator signal-wait"></div>
+          <div class="signal-content">
+            <div class="signal-meta">
+              <span class="signal-type wait">Wait</span>
+              <span class="signal-time">09:18 UTC</span>
+            </div>
+            <div class="signal-text">Delay <strong>US M36 G5 28GPT</strong> purchases. USDA export report due Thu — basis typically softens post-release.</div>
+            <div class="signal-conf">
+              <div class="conf-bar"><div class="conf-fill low"></div></div>
+              <div class="conf-label">64%</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DATA MOAT -->
+<section class="data-section" id="data">
+  <div class="data-layout">
+    <div class="data-monument">
+      <div class="big">1<span>M+</span></div>
+      <div class="sub">Metric Tons of Fixation Data</div>
+      <div class="source-tag">Proprietary — YS Group</div>
+    </div>
+    <div>
+      <div class="section-overline">Our Data</div>
+      <h2 class="section-heading">The dataset no competitor can replicate</h2>
+      <p class="section-body">Collected over five years by YS Group across active cotton indenting operations serving Pakistani textile mills. Every fixation, every origin, every price point.</p>
+      <ul class="data-list">
+        <li>Procurement timing, price levels, and basis decisions across dozens of mills</li>
+        <li>Origin selection patterns — US, Brazilian, Ivory Coast, Argentine cotton</li>
+        <li>Quality specifications mapped to yarn output requirements</li>
+        <li>Validated against ICE Cotton No. 2 futures and options data</li>
+        <li>Models built on institutional-grade market data and USDA classifications</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+
+<!-- PARTNERS -->
+<section class="partners-section" id="partners">
+  <div class="section-overline">Partners</div>
+  <h2 class="section-heading">Industry knowledge meets AI engineering</h2>
+  <p class="section-body">Cotton AI combines deep commodity trading experience with professional AI development.</p>
+  <div class="partners-grid">
+    <div class="partner-card">
+      <h4>YS Group</h4>
+      <div class="partner-role">Industry & Data</div>
+      <p>Our partnership with YS Group gives us access to decades of cotton fixation data. Our predictive models are trained on over a million metric tons from the last 5 years — the most relevant window for current market conditions.</p>
+    </div>
+
+    <div class="partner-card">
+      <h4>Ample Insight</h4>
+      <div class="partner-role">Engineering & AI</div>
+      <p>Toronto-based AI and engineering partner. Building the product — AI pipeline, model architecture, data science, and full-stack development.</p>
+      <a href="https://www.ampleinsight.com" target="_blank" style="display:inline-flex;align-items:center;gap:8px;font-size:12px;letter-spacing:1.5px;text-transform:uppercase;color:#C8A96E;text-decoration:none;font-weight:500;transition:all 0.2s;margin-top:4px;">Visit Ample Insight →</a>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-final" id="contact">
+  <div class="section-overline">Get Started</div>
+  <h2 class="section-heading">Join our founding partners</h2>
+  <p class="section-body">We're onboarding our first group of mills. Early access partners receive Pro-tier features at heavily discounted prices — plus sponsored trips to our Toronto office where the product is being developed by professional data scientists and AI engineers.</p>
+  <div class="cta-buttons">
+    <a href="mailto:omer.yahya@rotman.utoronto.ca" class="btn-gold">Request Early Access</a>
+    <a href="#" class="btn-outline">Download One-Pager</a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-left">
+    <div class="nav-logo">
+      <span class="nav-logo-line"></span>
+      Cotton AI
+    </div>
+    <p>Predictive procurement intelligence for the global textile industry. Incorporated in Canada.</p>
+  </div>
+  <div class="footer-cols">
+    <div class="footer-col">
+      <h5>Product</h5>
+      <a href="Cotton_AI_Solution.html">Solution</a>
+      <a href="Cotton_AI_Pricing.html">Pricing</a>
+      <a href="#data">Our Data</a>
+    </div>
+    <div class="footer-col">
+      <h5>Company</h5>
+      <a href="Cotton_AI_Partners.html">Partners</a>
+      <a href="#">About</a>
+      <a href="#">Careers</a>
+    </div>
+    <div class="footer-col">
+      <h5>Contact</h5>
+      <a href="mailto:omer.yahya@rotman.utoronto.ca">omer.yahya@rotman.utoronto.ca</a>
+      <a href="#">Toronto, Canada</a>
+    </div>
+  </div>
+</footer>
+<div class="footer-bottom">
+  <span>© 2026 Cotton AI Inc.</span>
+  <span>ysintelligence.ai</span>
+</div>
+
+<script src="mobile-nav.js"></script>
 </body>
 </html>
