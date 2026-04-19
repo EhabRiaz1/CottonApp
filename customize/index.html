@@ -1,636 +1,870 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Customize — Cotton AI</title>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<style>
-:root {
-  --bg: #09090B;
-  --bg-elevated: #111113;
-  --bg-card: #16161A;
-  --bg-card-hover: #1C1C21;
-  --text: #E4E2DB;
-  --text-dim: #7A7872;
-  --text-muted: #4A4944;
-  --gold: #C8A96E;
-  --gold-bright: #DBBD84;
-  --gold-dim: #8A7545;
-  --green: #4ADE80;
-  --blue: #60A5FA;
-  --amber: #FBBF24;
-  --purple: #A78BFA;
-  --border: rgba(255,255,255,0.06);
-  --border-gold: rgba(200,169,110,0.2);
-  --serif: 'Cormorant Garamond', Georgia, serif;
-  --sans: 'Outfit', -apple-system, sans-serif;
-  --mono: 'JetBrains Mono', monospace;
-}
-* { margin: 0; padding: 0; box-sizing: border-box; }
-html { scroll-behavior: smooth; }
-body { font-family: var(--sans); color: var(--text); background: var(--bg); overflow-x: hidden; -webkit-font-smoothing: antialiased; }
-body::after {
-  content: ''; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-  pointer-events: none; z-index: 9999; opacity: 0.025;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
-}
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Customize — Cotton AI</title>
+  <meta name="description" content="Customize Cotton AI to your workflow — interface, auto-fixation, auto-execute on ICE Cotton No. 2, and voice control.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..600;1,9..144,300..600&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0a0a0a;
+      --bg-elevated: #131211;
+      --bg-surface: #1a1816;
+      --border: #2a2622;
+      --border-subtle: #1f1d1a;
+      --text: #f0ece2;
+      --text-muted: #8f8a7d;
+      --text-dim: #5c5a52;
+      --accent: #d4b878;
+      --accent-dim: #a89666;
+      --success: #7fa968;
+      --danger: #c46a5a;
+      --warning: #d4a04f;
+      --display: 'Fraunces', Georgia, serif;
+      --sans: 'IBM Plex Sans', -apple-system, sans-serif;
+      --mono: 'IBM Plex Mono', Menlo, monospace;
+    }
 
-nav {
-  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 20px 72px; background: rgba(9,9,11,0.8);
-  backdrop-filter: blur(24px) saturate(1.2); border-bottom: 1px solid var(--border);
-}
-.nav-logo {
-  font-family: var(--sans); font-weight: 600; font-size: 16px;
-  letter-spacing: 3px; text-transform: uppercase; color: var(--gold);
-  display: flex; align-items: center; gap: 12px; text-decoration: none;
-}
-.nav-logo-line { width: 24px; height: 1px; background: var(--gold-dim); }
-.nav-links { display: flex; gap: 40px; list-style: none; }
-.nav-links a {
-  text-decoration: none; color: var(--text-dim); font-size: 13px;
-  font-weight: 400; letter-spacing: 1px; text-transform: uppercase; transition: color 0.3s;
-}
-.nav-links a:hover { color: var(--text); }
-.nav-links a.active { color: var(--gold); }
-.nav-cta {
-  color: var(--gold); border: 1px solid var(--border-gold);
-  padding: 10px 28px; font-size: 12px; letter-spacing: 1.5px;
-  text-transform: uppercase; font-weight: 500;
-  text-decoration: none; transition: all 0.3s; background: transparent;
-}
-.nav-cta:hover { background: rgba(200,169,110,0.08); border-color: var(--gold); }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
 
-.page-hero {
-  padding: 180px 72px 80px; position: relative;
-}
-.page-hero::before {
-  content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-  background: radial-gradient(ellipse 50% 60% at 50% 30%, rgba(200,169,110,0.04), transparent);
-  pointer-events: none;
-}
-.page-overline {
-  font-size: 11px; letter-spacing: 4px; text-transform: uppercase;
-  color: var(--gold-dim); font-weight: 500; margin-bottom: 24px;
-  display: flex; align-items: center; gap: 16px; position: relative;
-}
-.page-overline::before { content: ''; width: 24px; height: 1px; background: var(--gold-dim); }
-.page-hero h1 {
-  font-family: var(--serif); font-size: clamp(42px, 5.5vw, 72px);
-  line-height: 1.05; font-weight: 400; color: var(--text);
-  max-width: 900px; letter-spacing: -1px; position: relative; margin-bottom: 24px;
-}
-.page-hero h1 em { font-style: italic; color: var(--gold); }
-.page-hero p {
-  font-size: 17px; color: var(--text-dim); max-width: 600px;
-  line-height: 1.8; font-weight: 300; position: relative;
-}
-.h-rule { height: 1px; background: var(--border); margin: 0 72px; }
-section { padding: 120px 72px; }
-.section-overline {
-  font-size: 11px; letter-spacing: 4px; text-transform: uppercase;
-  color: var(--gold-dim); font-weight: 500; margin-bottom: 20px;
-  display: flex; align-items: center; gap: 16px;
-}
-.section-overline::before { content: ''; width: 24px; height: 1px; background: var(--gold-dim); }
-.section-heading {
-  font-family: var(--serif); font-size: clamp(32px, 4vw, 48px);
-  line-height: 1.15; margin-bottom: 24px; max-width: 650px; font-weight: 400;
-}
-.section-body {
-  font-size: 16px; color: var(--text-dim); line-height: 1.8;
-  max-width: 560px; margin-bottom: 56px; font-weight: 300;
-}
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      font-weight: 300;
+      font-size: 16px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
 
-/* FEATURE BLOCKS */
-.feature-block {
-  max-width: 1100px; margin-bottom: 0;
-  display: grid; grid-template-columns: 1fr 1fr; gap: 1px;
-  background: var(--border);
-}
-.feature-content {
-  background: var(--bg); padding: 64px 52px;
-  display: flex; flex-direction: column; justify-content: center;
-}
-.feature-visual {
-  background: var(--bg-elevated); padding: 48px;
-  display: flex; flex-direction: column; justify-content: center;
-  position: relative; overflow: hidden;
-}
-.feature-num {
-  font-family: var(--serif); font-size: 13px; color: var(--gold-dim);
-  font-style: italic; margin-bottom: 16px;
-}
-.feature-title {
-  font-family: var(--serif); font-size: 32px; font-weight: 400;
-  color: var(--text); margin-bottom: 16px; line-height: 1.15;
-}
-.feature-desc {
-  font-size: 14px; color: var(--text-dim); line-height: 1.75;
-  font-weight: 300; margin-bottom: 24px;
-}
-.feature-tag {
-  display: inline-flex; align-items: center; gap: 6px;
-  font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
-  padding: 5px 14px; border: 1px solid var(--border); color: var(--text-muted);
-  width: fit-content;
-}
-.feature-tag.pro { border-color: var(--border-gold); color: var(--gold); }
-.feature-tag.enterprise { border-color: rgba(167,139,250,0.3); color: var(--purple); }
+    a { color: inherit; text-decoration: none; }
 
-/* MOCK UI ELEMENTS */
-.mock-panel {
-  background: rgba(0,0,0,0.3); border: 1px solid var(--border);
-  border-radius: 8px; overflow: hidden;
-}
-.mock-panel-header {
-  padding: 12px 16px; border-bottom: 1px solid var(--border);
-  font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
-  color: var(--text-muted);
-}
+    .container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 32px;
+    }
 
-/* UI CUSTOMIZATION MOCK */
-.theme-options {
-  padding: 16px; display: flex; flex-direction: column; gap: 12px;
-}
-.theme-row {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 10px 0;
-}
-.theme-label { font-size: 12px; color: var(--text-dim); }
-.theme-swatches { display: flex; gap: 6px; }
-.theme-swatch {
-  width: 20px; height: 20px; border-radius: 4px; border: 1px solid var(--border);
-  cursor: pointer; transition: transform 0.2s;
-}
-.theme-swatch:hover { transform: scale(1.2); }
-.theme-swatch.active { border-color: var(--gold); box-shadow: 0 0 0 1px var(--gold); }
-.toggle-track {
-  width: 36px; height: 18px; border-radius: 10px;
-  background: rgba(255,255,255,0.1); position: relative; cursor: pointer;
-}
-.toggle-track.on { background: rgba(74,222,128,0.3); }
-.toggle-dot {
-  width: 14px; height: 14px; border-radius: 50%;
-  background: var(--text-muted); position: absolute;
-  top: 2px; left: 2px; transition: all 0.2s;
-}
-.toggle-track.on .toggle-dot { left: 20px; background: var(--green); }
+    /* NAV */
+    nav.site-nav {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(10, 10, 10, 0.82);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    .nav-inner {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 20px 32px; max-width: 1280px; margin: 0 auto;
+    }
+    .logo {
+      font-family: var(--display);
+      font-size: 22px;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+    }
+    .logo em { font-style: italic; font-weight: 300; color: var(--accent); }
+    .nav-links {
+      display: flex; gap: 34px; list-style: none;
+    }
+    .nav-links a {
+      font-size: 13px;
+      font-weight: 400;
+      color: var(--text-muted);
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--text); }
+    .nav-links a.active { color: var(--accent); }
+    .nav-cta {
+      padding: 10px 20px;
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      font-size: 13px;
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+    .nav-cta:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
 
-/* AUTO FIXATION MOCK */
-.fixation-flow {
-  padding: 16px; display: flex; flex-direction: column; gap: 10px;
-}
-.flow-step {
-  display: flex; align-items: center; gap: 12px;
-  padding: 10px 14px; background: rgba(255,255,255,0.02);
-  border: 1px solid var(--border); border-radius: 6px;
-}
-.flow-step-num {
-  width: 22px; height: 22px; border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 10px; font-weight: 600; flex-shrink: 0;
-}
-.flow-step-num.green { background: rgba(74,222,128,0.15); color: var(--green); }
-.flow-step-num.blue { background: rgba(96,165,250,0.15); color: var(--blue); }
-.flow-step-num.gold { background: rgba(200,169,110,0.15); color: var(--gold); }
-.flow-step-num.purple { background: rgba(167,139,250,0.15); color: var(--purple); }
-.flow-step-text { font-size: 12px; color: var(--text-dim); line-height: 1.4; }
-.flow-step-text strong { color: var(--text); font-weight: 500; }
-.flow-arrow {
-  text-align: center; color: var(--text-muted); font-size: 14px;
-  padding: 2px 0;
-}
+    /* HERO */
+    .hero {
+      padding: 120px 0 100px;
+      border-bottom: 1px solid var(--border-subtle);
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::after {
+      content: "";
+      position: absolute;
+      top: 0; right: -10%;
+      width: 50%; height: 100%;
+      background: radial-gradient(ellipse at center, rgba(212,184,120,0.05), transparent 60%);
+      pointer-events: none;
+    }
+    .kicker {
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 36px;
+      font-family: var(--sans);
+    }
+    .hero h1 {
+      font-family: var(--display);
+      font-weight: 300;
+      font-size: clamp(56px, 9vw, 120px);
+      line-height: 0.94;
+      letter-spacing: -0.045em;
+      margin-bottom: 44px;
+      max-width: 14ch;
+    }
+    .hero h1 em {
+      font-style: italic;
+      font-weight: 300;
+      color: var(--accent);
+    }
+    .hero p.lede {
+      max-width: 58ch;
+      font-size: 19px;
+      color: var(--text-muted);
+      line-height: 1.6;
+      font-weight: 300;
+    }
 
-/* MERCHANT LOGOS */
-.merchant-row {
-  display: flex; gap: 12px; padding: 16px; flex-wrap: wrap;
-}
-.merchant-chip {
-  padding: 8px 16px; border: 1px solid var(--border);
-  border-radius: 4px; font-size: 12px; font-weight: 500;
-  color: var(--text-dim); letter-spacing: 1px;
-  transition: all 0.2s;
-}
-.merchant-chip.connected { border-color: rgba(74,222,128,0.3); color: var(--green); }
+    /* SECTIONS */
+    section.feature {
+      padding: 120px 0;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    .feature-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 88px;
+      align-items: center;
+    }
+    .feature-grid.reverse .copy { order: 2; }
+    .feature-num {
+      font-family: var(--display);
+      font-style: italic;
+      font-weight: 300;
+      font-size: 68px;
+      color: var(--text-dim);
+      margin-bottom: 20px;
+      line-height: 1;
+    }
+    .feature-grid h2 {
+      font-family: var(--display);
+      font-weight: 300;
+      font-size: clamp(36px, 4.2vw, 56px);
+      line-height: 1.05;
+      letter-spacing: -0.03em;
+      margin: 16px 0 28px;
+    }
+    .feature-grid h2 em { font-style: italic; color: var(--accent); }
+    .feature-grid p {
+      font-size: 16px;
+      color: var(--text-muted);
+      line-height: 1.75;
+      max-width: 52ch;
+      margin-bottom: 36px;
+    }
+    .availability {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+    .availability::before {
+      content: "";
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+    }
 
-/* VOICE MOCK */
-.voice-grid {
-  padding: 16px; display: grid; grid-template-columns: 1fr 1fr;
-  gap: 8px;
-}
-.voice-option {
-  padding: 14px 16px; border: 1px solid var(--border);
-  border-radius: 6px; cursor: pointer; transition: all 0.2s;
-  display: flex; align-items: center; gap: 10px;
-}
-.voice-option:hover { border-color: rgba(255,255,255,0.12); background: rgba(255,255,255,0.02); }
-.voice-option.active { border-color: var(--gold); background: rgba(200,169,110,0.05); }
-.voice-icon {
-  width: 28px; height: 28px; border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 12px; flex-shrink: 0;
-}
-.voice-icon.siri { background: linear-gradient(135deg, #5B6CF0, #C644FC); color: white; }
-.voice-icon.jarvis { background: linear-gradient(135deg, #1E90FF, #00CED1); color: white; }
-.voice-icon.alfred { background: linear-gradient(135deg, var(--gold-dim), var(--gold)); color: var(--bg); }
-.voice-icon.vader { background: linear-gradient(135deg, #333, #111); color: #F44; }
-.voice-icon.custom { background: var(--border); color: var(--text-dim); }
-.voice-name { font-size: 12px; color: var(--text-dim); font-weight: 400; }
-.voice-option.active .voice-name { color: var(--gold); }
+    /* UI MOCKUP CARD */
+    .mock {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 28px;
+      font-family: var(--mono);
+      font-size: 13px;
+      position: relative;
+      box-shadow:
+        0 30px 80px -30px rgba(0, 0, 0, 0.9),
+        0 0 0 1px rgba(255, 255, 255, 0.02) inset;
+    }
+    .mock-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 18px;
+      margin-bottom: 22px;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    .mock-title {
+      font-family: var(--sans);
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+    .mock-status {
+      font-family: var(--sans);
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+    }
+    .mock-status.live { color: var(--success); }
+    .mock-status.listening { color: var(--accent); }
+    .mock-status.muted { color: var(--text-muted); }
 
-/* WAVEFORM */
-.waveform {
-  display: flex; align-items: center; gap: 3px;
-  height: 32px; padding: 16px 16px 20px;
-}
-.wave-bar {
-  width: 3px; border-radius: 2px; background: var(--gold);
-  opacity: 0.4;
-  animation: waveAnim 1.2s ease-in-out infinite;
-}
-.wave-bar:nth-child(1) { height: 8px; animation-delay: 0s; }
-.wave-bar:nth-child(2) { height: 16px; animation-delay: 0.1s; }
-.wave-bar:nth-child(3) { height: 24px; animation-delay: 0.2s; }
-.wave-bar:nth-child(4) { height: 12px; animation-delay: 0.3s; }
-.wave-bar:nth-child(5) { height: 20px; animation-delay: 0.4s; }
-.wave-bar:nth-child(6) { height: 28px; animation-delay: 0.5s; }
-.wave-bar:nth-child(7) { height: 14px; animation-delay: 0.6s; }
-.wave-bar:nth-child(8) { height: 22px; animation-delay: 0.7s; }
-.wave-bar:nth-child(9) { height: 10px; animation-delay: 0.8s; }
-.wave-bar:nth-child(10) { height: 18px; animation-delay: 0.9s; }
-.wave-bar:nth-child(11) { height: 26px; animation-delay: 1.0s; }
-.wave-bar:nth-child(12) { height: 8px; animation-delay: 1.1s; }
-@keyframes waveAnim {
-  0%, 100% { transform: scaleY(0.4); opacity: 0.3; }
-  50% { transform: scaleY(1); opacity: 0.8; }
-}
+    /* Interface Settings */
+    .setting-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 14px 0;
+      border-bottom: 1px dashed var(--border-subtle);
+    }
+    .setting-row:last-child { border-bottom: 0; }
+    .setting-label {
+      color: var(--text-muted);
+      font-family: var(--sans);
+      font-size: 13px;
+    }
+    .setting-value {
+      color: var(--text);
+      font-family: var(--mono);
+      font-size: 13px;
+    }
+    .swatches { display: flex; gap: 8px; }
+    .swatch {
+      width: 22px; height: 22px; border-radius: 50%;
+      border: 2px solid var(--border);
+      cursor: pointer;
+      transition: transform 0.15s;
+    }
+    .swatch:hover { transform: scale(1.1); }
+    .swatch.active {
+      border-color: var(--text);
+      box-shadow: 0 0 0 2px var(--bg-elevated), 0 0 0 3px var(--text);
+    }
+    .toggle {
+      width: 36px; height: 20px;
+      background: var(--border);
+      border-radius: 100px;
+      position: relative;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .toggle::after {
+      content: "";
+      position: absolute; top: 2px; left: 2px;
+      width: 16px; height: 16px;
+      background: var(--text-muted);
+      border-radius: 50%;
+      transition: all 0.2s;
+    }
+    .toggle.on { background: var(--accent-dim); }
+    .toggle.on::after { left: 18px; background: var(--bg); }
 
-/* TRADING MOCK */
-.trade-rows {
-  padding: 16px; display: flex; flex-direction: column; gap: 8px;
-}
-.trade-row {
-  display: flex; justify-content: space-between; align-items: center;
-  padding: 10px 12px; background: rgba(255,255,255,0.02);
-  border: 1px solid var(--border); border-radius: 4px;
-  font-size: 12px; font-family: var(--mono);
-}
-.trade-action { font-weight: 600; letter-spacing: 1px; }
-.trade-action.buy { color: var(--green); }
-.trade-action.sell { color: var(--amber); }
-.trade-details { color: var(--text-dim); }
-.trade-status {
-  font-size: 10px; letter-spacing: 1px; text-transform: uppercase;
-  padding: 3px 8px; border-radius: 3px;
-}
-.trade-status.executed { background: rgba(74,222,128,0.12); color: var(--green); }
-.trade-status.pending { background: rgba(251,191,36,0.12); color: var(--amber); }
+    /* Workflow */
+    .workflow-step {
+      display: grid;
+      grid-template-columns: 36px 1fr;
+      gap: 16px;
+      padding: 14px 0;
+      align-items: start;
+    }
+    .step-num {
+      font-family: var(--display);
+      font-style: italic;
+      font-weight: 400;
+      font-size: 22px;
+      color: var(--accent);
+      line-height: 1.2;
+    }
+    .step-body {
+      font-family: var(--sans);
+      color: var(--text);
+      font-size: 14px;
+      line-height: 1.55;
+    }
+    .step-body strong {
+      font-weight: 500;
+      color: var(--accent);
+    }
+    .step-body .meta {
+      color: var(--text-dim);
+      font-family: var(--mono);
+      font-size: 11px;
+      margin-top: 6px;
+      display: block;
+      letter-spacing: 0.02em;
+    }
+    .workflow-sep {
+      height: 18px;
+      margin-left: 17px;
+      border-left: 1px dashed var(--border);
+    }
 
-/* CTA */
-.cta-section {
-  padding: 140px 72px; text-align: center;
-  background: var(--bg-elevated); position: relative;
-}
-.cta-section::before {
-  content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-  background: radial-gradient(ellipse 50% 50% at 50% 50%, rgba(200,169,110,0.03), transparent);
-  pointer-events: none;
-}
-.cta-section .section-heading { margin: 0 auto 20px; max-width: 600px; text-align: center; }
-.cta-body {
-  font-size: 16px; color: var(--text-dim); max-width: 520px;
-  margin: 0 auto 40px; line-height: 1.8; font-weight: 300;
-  text-align: center; position: relative;
-}
-.btn-gold {
-  background: var(--gold); color: var(--bg);
-  padding: 16px 36px; font-size: 12px; letter-spacing: 2px;
-  text-transform: uppercase; font-weight: 600;
-  text-decoration: none; border: none; cursor: pointer;
-  transition: all 0.3s; display: inline-block; position: relative;
-}
-.btn-gold:hover { background: var(--gold-bright); transform: translateY(-2px); box-shadow: 0 12px 40px rgba(200,169,110,0.2); }
+    .mock-section {
+      margin-top: 28px;
+      padding-top: 22px;
+      border-top: 1px solid var(--border-subtle);
+    }
+    .mock-section-label {
+      font-family: var(--sans);
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 14px;
+    }
+    .merchant-list {
+      display: flex; flex-wrap: wrap; gap: 8px;
+    }
+    .merchant {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 6px 12px;
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      font-size: 12px;
+      font-family: var(--sans);
+      color: var(--text-muted);
+    }
+    .merchant.connected {
+      color: var(--success);
+      border-color: rgba(127, 169, 104, 0.35);
+    }
+    .merchant.connected::before {
+      content: "";
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--success);
+    }
+    .merchant.add {
+      color: var(--accent);
+      border-style: dashed;
+    }
 
-footer {
-  padding: 72px; border-top: 1px solid var(--border);
-  display: flex; justify-content: space-between; align-items: flex-start;
-}
-.footer-left { max-width: 280px; }
-.footer-left .nav-logo { margin-bottom: 16px; }
-.footer-left p { font-size: 13px; color: var(--text-muted); line-height: 1.65; font-weight: 300; }
-.footer-cols { display: flex; gap: 80px; }
-.footer-col h5 {
-  font-size: 10px; letter-spacing: 3px; text-transform: uppercase;
-  color: var(--text-muted); margin-bottom: 20px;
-}
-.footer-col a {
-  display: block; font-size: 13px; color: var(--text-dim);
-  text-decoration: none; margin-bottom: 12px; transition: color 0.2s; font-weight: 300;
-}
-.footer-col a:hover { color: var(--gold); }
-.footer-bottom {
-  padding: 24px 72px; border-top: 1px solid var(--border);
-  display: flex; justify-content: space-between;
-  font-size: 11px; color: var(--text-muted); letter-spacing: 0.5px;
-}
+    /* Auto-trade log */
+    .log-row {
+      display: grid;
+      grid-template-columns: 56px 1fr auto;
+      gap: 14px;
+      padding: 14px 0;
+      border-bottom: 1px dashed var(--border-subtle);
+      font-family: var(--mono);
+      font-size: 13px;
+      align-items: center;
+    }
+    .log-row:last-child { border-bottom: 0; }
+    .log-side {
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      font-size: 11px;
+    }
+    .log-side.buy { color: var(--success); }
+    .log-side.sell { color: var(--danger); }
+    .log-detail { color: var(--text); }
+    .log-status {
+      font-family: var(--sans);
+      font-size: 10px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      padding: 4px 10px;
+      border-radius: 100px;
+    }
+    .log-status.executed {
+      color: var(--success);
+      background: rgba(127, 169, 104, 0.08);
+    }
+    .log-status.pending {
+      color: var(--warning);
+      background: rgba(212, 160, 79, 0.08);
+    }
 
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(24px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-.page-overline, .page-hero h1, .page-hero p { animation: fadeUp 0.8s ease-out both; }
-.page-hero h1 { animation-delay: 0.1s; }
-.page-hero p { animation-delay: 0.2s; }
+    /* Voice */
+    .voices {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 12px;
+      margin-bottom: 28px;
+    }
+    .voice-card { text-align: center; }
+    .voice-avatar {
+      aspect-ratio: 1;
+      border: 1px solid var(--border);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--display);
+      font-style: italic;
+      font-weight: 300;
+      font-size: 26px;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .voice-avatar:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+    .voice-avatar.selected {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: rgba(212, 184, 120, 0.06);
+      box-shadow: 0 0 0 1px var(--accent);
+    }
+    .voice-avatar.add {
+      border-style: dashed;
+      font-size: 22px;
+    }
+    .voice-name {
+      font-family: var(--sans);
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-top: 10px;
+    }
+    .voice-quote {
+      font-family: var(--display);
+      font-style: italic;
+      font-weight: 300;
+      font-size: 17px;
+      line-height: 1.6;
+      color: var(--text);
+      padding: 22px 24px;
+      border-left: 2px solid var(--accent);
+      background: rgba(212, 184, 120, 0.04);
+      border-radius: 0 4px 4px 0;
+    }
+    .voice-quote strong {
+      font-style: normal;
+      font-family: var(--mono);
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--accent);
+    }
 
-@media (max-width: 768px) {
-  nav { padding: 16px 24px; }
-  .nav-links { display: none; }
-  .page-hero, section, .cta-section, footer, .footer-bottom { padding-left: 24px; padding-right: 24px; }
-  .h-rule { margin: 0 24px; }
-  .feature-block { grid-template-columns: 1fr; }
-  .voice-grid { grid-template-columns: 1fr; }
-  footer { flex-direction: column; gap: 40px; }
-  .footer-cols { gap: 40px; }
-  .footer-bottom { flex-direction: column; gap: 8px; }
-}
-</style>
-<link rel="stylesheet" href="/mobile-overrides.css">
+    /* CTA */
+    section.cta {
+      padding: 160px 0 180px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    section.cta::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 50% 40%, rgba(212, 184, 120, 0.06), transparent 60%);
+      pointer-events: none;
+    }
+    .cta-inner { position: relative; z-index: 1; }
+    .cta h2 {
+      font-family: var(--display);
+      font-weight: 300;
+      font-size: clamp(44px, 5.5vw, 72px);
+      line-height: 1.05;
+      letter-spacing: -0.035em;
+      margin: 24px 0 24px;
+      max-width: 16ch;
+      margin-inline: auto;
+    }
+    .cta h2 em { font-style: italic; color: var(--accent); }
+    .cta p {
+      max-width: 54ch;
+      margin: 0 auto 44px;
+      color: var(--text-muted);
+      font-size: 17px;
+    }
+    .button {
+      display: inline-block;
+      padding: 17px 36px;
+      background: var(--accent);
+      color: var(--bg);
+      font-weight: 500;
+      font-size: 13px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      border-radius: 2px;
+      transition: all 0.2s;
+    }
+    .button:hover {
+      background: var(--text);
+      transform: translateY(-1px);
+    }
+
+    /* FOOTER */
+    footer.site-footer {
+      border-top: 1px solid var(--border-subtle);
+      padding: 72px 0 44px;
+    }
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 56px;
+      margin-bottom: 52px;
+    }
+    .footer-brand .logo { margin-bottom: 18px; display: inline-block; }
+    .footer-brand p {
+      color: var(--text-muted);
+      font-size: 14px;
+      max-width: 38ch;
+      line-height: 1.65;
+    }
+    .footer-col h5 {
+      font-family: var(--sans);
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 18px;
+    }
+    .footer-col a {
+      display: block;
+      color: var(--text);
+      font-size: 14px;
+      margin-bottom: 10px;
+      transition: color 0.2s;
+    }
+    .footer-col a:hover { color: var(--accent); }
+    .footer-base {
+      padding-top: 28px;
+      border-top: 1px solid var(--border-subtle);
+      color: var(--text-dim);
+      font-size: 11px;
+      font-family: var(--mono);
+      letter-spacing: 0.05em;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    @media (max-width: 860px) {
+      .feature-grid { grid-template-columns: 1fr; gap: 56px; }
+      .feature-grid.reverse .copy { order: 0; }
+      .nav-links { display: none; }
+      .footer-grid { grid-template-columns: 1fr 1fr; gap: 40px; }
+      .voices { grid-template-columns: repeat(5, 1fr); gap: 8px; }
+      section.feature { padding: 80px 0; }
+      .hero { padding: 80px 0 70px; }
+    }
+  </style>
 </head>
 <body>
 
-<!-- NAV -->
-<nav>
-  <a href="/" class="nav-logo"><span class="nav-logo-line"></span>Cotton AI</a>
-  <button class="nav-toggle" type="button" aria-label="Toggle navigation menu">
-    <span class="nav-toggle-line"></span>
-    <span class="nav-toggle-line"></span>
-    <span class="nav-toggle-line"></span>
-  </button>
-  <div class="nav-panel">
-    <ul class="nav-links">
-      <li><a href="/">Home</a></li>
-      <li><a href="/solution/">Solution</a></li>
-      <li><a href="/customize/" class="active">Customize</a></li>
-      <li><a href="/pricing/">Pricing</a></li>
-      <li><a href="/partners/">Partners</a></li>
-      <li><a href="/clients/">Clients</a></li>
-    </ul>
-    <a href="/#contact" class="nav-cta">Request Access</a>
-  </div>
-</nav>
-
-<!-- PAGE HERO -->
-<section class="page-hero">
-  <div class="page-overline">Customize</div>
-  <h1>Your app. <em>Your rules.</em></h1>
-  <p>Cotton AI adapts to how you work — not the other way around. Customize the interface, automate your fixation workflow, enable hands-free voice control, and let the AI execute on your behalf.</p>
-</section>
-
-<div class="h-rule"></div>
-
-<!-- FEATURE 1: UI CUSTOMIZATION -->
-<section class="feature-section">
-  <div class="feature-block">
-    <div class="feature-content">
-      <div class="feature-num">i.</div>
-      <div class="feature-title">Make it yours</div>
-      <div class="feature-desc">Change the look and feel of Cotton AI to match your workflow. Dark mode, light mode, compact view, expanded dashboards — arrange the interface the way your procurement team actually uses it. Set default origins, preferred contract months, and notification preferences so the app opens ready to work.</div>
-      <div class="feature-tag pro">Available on Pro & Enterprise</div>
+  <nav class="site-nav">
+    <div class="nav-inner">
+      <a href="/" class="logo">Cotton <em>AI</em></a>
+      <ul class="nav-links">
+        <li><a href="/">Home</a></li>
+        <li><a href="/solution/">Solution</a></li>
+        <li><a href="/customize/" class="active">Customize</a></li>
+        <li><a href="/pricing/">Pricing</a></li>
+        <li><a href="/partners/">Partners</a></li>
+        <li><a href="/clients/">Clients</a></li>
+      </ul>
+      <a href="/#contact" class="nav-cta">Request Access</a>
     </div>
-    <div class="feature-visual">
-      <div class="mock-panel">
-        <div class="mock-panel-header">Interface Settings</div>
-        <div class="theme-options">
-          <div class="theme-row">
-            <span class="theme-label">Theme</span>
-            <div class="theme-swatches">
-              <div class="theme-swatch active" style="background: #09090B;"></div>
-              <div class="theme-swatch" style="background: #1a1a2e;"></div>
-              <div class="theme-swatch" style="background: #FAFAF7;"></div>
-              <div class="theme-swatch" style="background: #0D1B2A;"></div>
+  </nav>
+
+  <header class="hero">
+    <div class="container">
+      <div class="kicker">Customize</div>
+      <h1>Your app.<br><em>Your rules.</em></h1>
+      <p class="lede">Cotton AI adapts to how you work — not the other way around. Customize the interface, automate your fixation workflow, enable hands-free voice control, and let the AI execute on your behalf.</p>
+    </div>
+  </header>
+
+  <!-- Section i: Make it yours -->
+  <section class="feature">
+    <div class="container">
+      <div class="feature-grid">
+        <div class="copy">
+          <div class="feature-num">i.</div>
+          <div class="kicker">Make it yours</div>
+          <h2>The interface bends to <em>your workflow</em>.</h2>
+          <p>Change the look and feel of Cotton AI to match how your team actually works. Dark mode, light mode, compact view, expanded dashboards — arrange the interface the way your procurement desk uses it. Set default origins, preferred contract months, and notification preferences so the app opens ready to work.</p>
+          <div class="availability">Available on Pro &amp; Enterprise</div>
+        </div>
+        <div class="visual">
+          <div class="mock">
+            <div class="mock-header">
+              <span class="mock-title">Interface Settings</span>
+              <span class="mock-status muted">Synced · 2 min ago</span>
+            </div>
+            <div class="setting-row">
+              <span class="setting-label">Theme</span>
+              <span class="setting-value">Dark · Ivory</span>
+            </div>
+            <div class="setting-row">
+              <span class="setting-label">Accent color</span>
+              <div class="swatches">
+                <span class="swatch active" style="background:#d4b878"></span>
+                <span class="swatch" style="background:#7fa968"></span>
+                <span class="swatch" style="background:#c46a5a"></span>
+                <span class="swatch" style="background:#8ba5c4"></span>
+              </div>
+            </div>
+            <div class="setting-row">
+              <span class="setting-label">Compact mode</span>
+              <span class="toggle"></span>
+            </div>
+            <div class="setting-row">
+              <span class="setting-label">Live signal sidebar</span>
+              <span class="toggle on"></span>
+            </div>
+            <div class="setting-row">
+              <span class="setting-label">Default origin view</span>
+              <span class="setting-value">Brazilian M36</span>
+            </div>
+            <div class="setting-row">
+              <span class="setting-label">Default contract</span>
+              <span class="setting-value">Dec '26</span>
             </div>
           </div>
-          <div class="theme-row">
-            <span class="theme-label">Accent Color</span>
-            <div class="theme-swatches">
-              <div class="theme-swatch active" style="background: #C8A96E;"></div>
-              <div class="theme-swatch" style="background: #4ADE80;"></div>
-              <div class="theme-swatch" style="background: #60A5FA;"></div>
-              <div class="theme-swatch" style="background: #F87171;"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section ii: Auto-fixation -->
+  <section class="feature">
+    <div class="container">
+      <div class="feature-grid reverse">
+        <div class="copy">
+          <div class="feature-num">ii.</div>
+          <div class="kicker">Auto-fixation</div>
+          <h2>Fix at the right futures level — <em>automatically</em>.</h2>
+          <p>Set your target futures level, volume, origin, and contract month. When ICE Cotton No. 2 hits your trigger, Cotton AI automatically dispatches the fixation instruction to your preferred merchant. Connect directly to Cargill, Olam, ECOM, Toyoshima, and others. No phone calls. No missed windows. The AI watches the board so you don't have to.</p>
+          <div class="availability">Enterprise Only</div>
+        </div>
+        <div class="visual">
+          <div class="mock">
+            <div class="mock-header">
+              <span class="mock-title">Auto-Fixation Workflow</span>
+              <span class="mock-status live">● Live</span>
+            </div>
+
+            <div class="workflow-step">
+              <span class="step-num">1</span>
+              <div class="step-body">
+                <strong>Strategy created</strong> — Fix 5,000 MT Brazilian M36 G5 28GPT when <strong>Dec '26 futures trade at or below 68.00&nbsp;¢/lb</strong>.
+                <span class="meta">Created 08:14 UTC · valid through 05 Dec · basis pre-locked at +425</span>
+              </div>
+            </div>
+            <div class="workflow-sep"></div>
+
+            <div class="workflow-step">
+              <span class="step-num">2</span>
+              <div class="step-body">
+                <strong>Condition met</strong> — Dec '26 printed <strong>68.00&nbsp;¢/lb</strong> at 14:32 UTC. Strategy triggered.
+                <span class="meta">Trigger latency: 0.4 s · volume filter passed</span>
+              </div>
+            </div>
+            <div class="workflow-sep"></div>
+
+            <div class="workflow-step">
+              <span class="step-num">3</span>
+              <div class="step-body">
+                <strong>Fixation sent</strong> — Order auto-dispatched to <strong>Cargill</strong> for execution.
+                <span class="meta">Ref #FX-2026-11482 · channel: direct API</span>
+              </div>
+            </div>
+            <div class="workflow-sep"></div>
+
+            <div class="workflow-step">
+              <span class="step-num">4</span>
+              <div class="step-body">
+                <strong>Confirmed</strong> — Fixed at <strong>68.00&nbsp;¢/lb on Dec '26</strong>. Hedge auto-placed against open forward book.
+                <span class="meta">Landed price: 72.25&nbsp;¢/lb incl. basis · P&amp;L vs. avg: +1.18&nbsp;¢/lb</span>
+              </div>
+            </div>
+
+            <div class="mock-section">
+              <div class="mock-section-label">Connected merchants</div>
+              <div class="merchant-list">
+                <span class="merchant connected">Cargill</span>
+                <span class="merchant connected">Olam</span>
+                <span class="merchant connected">ECOM</span>
+                <span class="merchant">Toyoshima</span>
+                <span class="merchant add">+ Add</span>
+              </div>
             </div>
           </div>
-          <div class="theme-row">
-            <span class="theme-label">Compact Mode</span>
-            <div class="toggle-track"><div class="toggle-dot"></div></div>
-          </div>
-          <div class="theme-row">
-            <span class="theme-label">Live Signal Sidebar</span>
-            <div class="toggle-track on"><div class="toggle-dot"></div></div>
-          </div>
-          <div class="theme-row">
-            <span class="theme-label">Default Origin View</span>
-            <span style="font-size: 12px; color: var(--gold); font-family: var(--mono);">Brazilian M36</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section iii: Auto-execute futures & options -->
+  <section class="feature">
+    <div class="container">
+      <div class="feature-grid">
+        <div class="copy">
+          <div class="feature-num">iii.</div>
+          <div class="kicker">Auto-execute derivatives</div>
+          <h2>Hedge without <em>picking up the phone</em>.</h2>
+          <p>Enable automated hedging on ICE Cotton No. 2. Cotton AI can execute futures and options trades on your behalf based on your approved strategies — buying puts when IV is cheap, selling calls to cap upside, or rolling positions as contracts approach expiry. Every trade follows your pre-set risk parameters. Nothing executes outside your rules.</p>
+          <div class="availability">Enterprise Only</div>
+        </div>
+        <div class="visual">
+          <div class="mock">
+            <div class="mock-header">
+              <span class="mock-title">Auto-Trade Log</span>
+              <span class="mock-status muted">Today · 3 events</span>
+            </div>
+            <div class="log-row">
+              <span class="log-side buy">BUY</span>
+              <span class="log-detail">Dec '26 67P × 10 @ 1.43</span>
+              <span class="log-status executed">Executed</span>
+            </div>
+            <div class="log-row">
+              <span class="log-side sell">SELL</span>
+              <span class="log-detail">Dec '26 78C × 5 @ 0.89</span>
+              <span class="log-status executed">Executed</span>
+            </div>
+            <div class="log-row">
+              <span class="log-side buy">BUY</span>
+              <span class="log-detail">Mar '27 65P × 8 @ 2.10</span>
+              <span class="log-status pending">Pending</span>
+            </div>
+
+            <div class="mock-section">
+              <div class="mock-section-label">Risk parameters</div>
+              <div class="setting-row">
+                <span class="setting-label">Max position</span>
+                <span class="setting-value">20 contracts</span>
+              </div>
+              <div class="setting-row">
+                <span class="setting-label">Max premium / month</span>
+                <span class="setting-value">$50,000</span>
+              </div>
+              <div class="setting-row">
+                <span class="setting-label">Auto-execute</span>
+                <span class="toggle on"></span>
+              </div>
+              <div class="setting-row">
+                <span class="setting-label">Require approval above</span>
+                <span class="setting-value">$10,000</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
-</section>
+  </section>
 
-<!-- FEATURE 2: AUTO FIXATION -->
-<section class="feature-section-tight">
-  <div class="feature-block">
-    <div class="feature-visual">
-      <div class="mock-panel">
-        <div class="mock-panel-header">Auto-Fixation Workflow</div>
-        <div class="fixation-flow">
-          <div class="flow-step">
-            <div class="flow-step-num green">1</div>
-            <div class="flow-step-text"><strong>Strategy Created</strong> — Fix 5,000 MT Brazilian M36 when basis drops below 680 on Dec26</div>
-          </div>
-          <div class="flow-arrow">↓</div>
-          <div class="flow-step">
-            <div class="flow-step-num blue">2</div>
-            <div class="flow-step-text"><strong>Condition Met</strong> — Basis hit 675 at 14:32 UTC. Strategy triggered.</div>
-          </div>
-          <div class="flow-arrow">↓</div>
-          <div class="flow-step">
-            <div class="flow-step-num gold">3</div>
-            <div class="flow-step-text"><strong>Fixation Sent</strong> — Order auto-dispatched to <strong>Cargill</strong> for execution</div>
-          </div>
-          <div class="flow-arrow">↓</div>
-          <div class="flow-step">
-            <div class="flow-step-num purple">4</div>
-            <div class="flow-step-text"><strong>Confirmed</strong> — Fixation confirmed at 675 on Dec26. Hedge auto-placed.</div>
-          </div>
+  <!-- Section iv: Voice control -->
+  <section class="feature">
+    <div class="container">
+      <div class="feature-grid reverse">
+        <div class="copy">
+          <div class="feature-num">iv.</div>
+          <div class="kicker">Voice control</div>
+          <h2>Talk to your <em>cotton desk</em>.</h2>
+          <p>Speak to Cotton AI and have it speak back. Ask for market updates, request procurement recommendations, or approve fixation orders — all hands-free. Choose your preferred voice: Siri, Jarvis, Alfred, Darth Vader, or upload a custom one. The AI listens, holds context across the conversation, and responds naturally. Useful on the factory floor, in the car, or across time zones.</p>
+          <div class="availability">Available on Pro &amp; Enterprise</div>
         </div>
-      </div>
-      <div class="mock-panel" style="margin-top: 12px;">
-        <div class="mock-panel-header">Connected Merchants</div>
-        <div class="merchant-row">
-          <span class="merchant-chip connected">● Cargill</span>
-          <span class="merchant-chip connected">● Olam</span>
-          <span class="merchant-chip connected">● ECOM</span>
-          <span class="merchant-chip">Louis Dreyfus</span>
-          <span class="merchant-chip">Glencore</span>
-          <span class="merchant-chip">+ Add</span>
-        </div>
-      </div>
-    </div>
-    <div class="feature-content">
-      <div class="feature-num">ii.</div>
-      <div class="feature-title">Auto-fixation</div>
-      <div class="feature-desc">Create your fixation strategies — set your target basis, volume, origin, and contract month. When market conditions match, Cotton AI automatically sends the fixation order to your preferred merchant. Connect directly to Cargill, Olam, ECOM, Louis Dreyfus, Glencore, and other major merchants. No phone calls. No missed windows. The AI watches the market so you don't have to.</div>
-      <div class="feature-tag enterprise">Enterprise Only</div>
-    </div>
-  </div>
-</section>
-
-<!-- FEATURE 3: AUTO TRADING -->
-<section class="feature-section-tight">
-  <div class="feature-block">
-    <div class="feature-content">
-      <div class="feature-num">iii.</div>
-      <div class="feature-title">Auto-execute futures & options</div>
-      <div class="feature-desc">Enable automated hedging on ICE Cotton No. 2. Cotton AI can execute futures and options trades on your behalf based on your approved strategies — buying puts when IV is cheap, selling calls to cap upside, or rolling positions as contracts approach expiry. Every trade follows your pre-set risk parameters. Nothing executes without your rules.</div>
-      <div class="feature-tag enterprise">Enterprise Only</div>
-    </div>
-    <div class="feature-visual">
-      <div class="mock-panel">
-        <div class="mock-panel-header">Auto-Trade Log</div>
-        <div class="trade-rows">
-          <div class="trade-row">
-            <span class="trade-action buy">BUY</span>
-            <span class="trade-details">Dec26 67P × 10 @ 1.43</span>
-            <span class="trade-status executed">Executed</span>
-          </div>
-          <div class="trade-row">
-            <span class="trade-action sell">SELL</span>
-            <span class="trade-details">Dec26 78C × 5 @ 0.89</span>
-            <span class="trade-status executed">Executed</span>
-          </div>
-          <div class="trade-row">
-            <span class="trade-action buy">BUY</span>
-            <span class="trade-details">Mar27 65P × 8 @ 2.10</span>
-            <span class="trade-status pending">Pending</span>
-          </div>
-        </div>
-      </div>
-      <div class="mock-panel" style="margin-top: 12px;">
-        <div class="mock-panel-header">Risk Parameters</div>
-        <div class="theme-options">
-          <div class="theme-row">
-            <span class="theme-label">Max Position Size</span>
-            <span style="font-size: 12px; color: var(--gold); font-family: var(--mono);">20 contracts</span>
-          </div>
-          <div class="theme-row">
-            <span class="theme-label">Max Premium Spend</span>
-            <span style="font-size: 12px; color: var(--gold); font-family: var(--mono);">$50,000/mo</span>
-          </div>
-          <div class="theme-row">
-            <span class="theme-label">Auto-Execute</span>
-            <div class="toggle-track on"><div class="toggle-dot"></div></div>
-          </div>
-          <div class="theme-row">
-            <span class="theme-label">Require Approval Above</span>
-            <span style="font-size: 12px; color: var(--amber); font-family: var(--mono);">$10,000</span>
+        <div class="visual">
+          <div class="mock">
+            <div class="mock-header">
+              <span class="mock-title">Voice Assistant</span>
+              <span class="mock-status listening">● Listening</span>
+            </div>
+            <div class="voices">
+              <div class="voice-card">
+                <div class="voice-avatar">S</div>
+                <div class="voice-name">Siri</div>
+              </div>
+              <div class="voice-card">
+                <div class="voice-avatar selected">J</div>
+                <div class="voice-name">Jarvis</div>
+              </div>
+              <div class="voice-card">
+                <div class="voice-avatar">A</div>
+                <div class="voice-name">Alfred</div>
+              </div>
+              <div class="voice-card">
+                <div class="voice-avatar">V</div>
+                <div class="voice-name">Vader</div>
+              </div>
+              <div class="voice-card">
+                <div class="voice-avatar add">+</div>
+                <div class="voice-name">Custom</div>
+              </div>
+            </div>
+            <div class="voice-quote">
+              "Dec '26 just printed below your target. I've prepared a fixation order for 5,000 MT of Brazilian M36 at <strong>68.00 ¢/lb on Dec '26</strong>. Should I send it to Cargill?"
+            </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
-</section>
+  </section>
 
-<!-- FEATURE 4: VOICE CONTROL -->
-<section class="feature-section-last">
-  <div class="feature-block">
-    <div class="feature-visual">
-      <div class="mock-panel">
-        <div class="mock-panel-header">Voice Assistant</div>
-        <div class="voice-grid">
-          <div class="voice-option">
-            <div class="voice-icon siri">S</div>
-            <span class="voice-name">Siri</span>
-          </div>
-          <div class="voice-option active">
-            <div class="voice-icon jarvis">J</div>
-            <span class="voice-name">Jarvis</span>
-          </div>
-          <div class="voice-option">
-            <div class="voice-icon alfred">A</div>
-            <span class="voice-name">Alfred</span>
-          </div>
-          <div class="voice-option">
-            <div class="voice-icon vader">D</div>
-            <span class="voice-name">Darth Vader</span>
-          </div>
-          <div class="voice-option">
-            <div class="voice-icon custom">+</div>
-            <span class="voice-name">Custom Voice</span>
-          </div>
+  <!-- CTA -->
+  <section class="cta">
+    <div class="container cta-inner">
+      <div class="kicker">Your platform, your way</div>
+      <h2>Built to fit <em>how you work</em>.</h2>
+      <p>Every mill operates differently. Cotton AI adapts to your workflow, your risk tolerance, your merchants, and your voice. Request a demo and see what customization looks like for your operation.</p>
+      <a href="mailto:omer.yahya@rotman.utoronto.ca" class="button">Request a Custom Demo</a>
+    </div>
+  </section>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="/" class="logo">Cotton <em>AI</em></a>
+          <p>Predictive procurement intelligence for the global textile industry. Incorporated in Canada.</p>
         </div>
-        <div class="waveform">
-          <div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div>
-          <div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div>
-          <div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div>
-          <div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div>
+        <div class="footer-col">
+          <h5>Product</h5>
+          <a href="/solution/">Solution</a>
+          <a href="/customize/">Customize</a>
+          <a href="/pricing/">Pricing</a>
         </div>
-        <div style="padding: 0 16px 16px; font-size: 13px; color: var(--text-dim); font-style: italic; line-height: 1.5;">
-          "Brazilian basis just dropped below your target. I've prepared a fixation order for 5,000 MT at 675 on Dec26. Should I send it to Cargill?"
+        <div class="footer-col">
+          <h5>Company</h5>
+          <a href="/partners/">Partners</a>
+          <a href="/clients/">Clients</a>
+          <a href="#">Careers</a>
+        </div>
+        <div class="footer-col">
+          <h5>Contact</h5>
+          <a href="mailto:omer.yahya@rotman.utoronto.ca">omer.yahya@rotman.utoronto.ca</a>
+          <a href="#">Toronto, Canada</a>
         </div>
       </div>
+      <div class="footer-base">
+        <span>© 2026 Cotton AI Inc.</span>
+        <span>ysintelligence.ai</span>
+      </div>
     </div>
-    <div class="feature-content">
-      <div class="feature-num">iv.</div>
-      <div class="feature-title">Voice control</div>
-      <div class="feature-desc">Speak to Cotton AI and have it speak back. Ask for market updates, request procurement recommendations, or approve fixation orders — all hands-free. Choose your preferred voice: Siri, Jarvis, Alfred, Darth Vader, or upload a custom voice. The AI listens, understands your context, and responds in natural conversation. Perfect for mill executives on the factory floor or in transit.</div>
-      <div class="feature-tag pro">Available on Pro & Enterprise</div>
-    </div>
-  </div>
-</section>
+  </footer>
 
-<!-- CTA -->
-<section class="cta-section">
-  <div class="section-overline" style="justify-content:center;"><span style="display:none;"></span>Your Platform, Your Way</div>
-  <h2 class="section-heading">Built to fit how you work</h2>
-  <p class="cta-body">Every mill operates differently. Cotton AI adapts to your workflow, your risk tolerance, your merchants, and your voice. Request a demo and see what customization looks like for your operation.</p>
-  <a href="mailto:omer.yahya@rotman.utoronto.ca" class="btn-gold">Request a Custom Demo</a>
-</section>
-
-<!-- FOOTER -->
-<footer>
-  <div class="footer-left">
-    <div class="nav-logo"><span class="nav-logo-line"></span>Cotton AI</div>
-    <p>Predictive procurement intelligence for the global textile industry. Incorporated in Canada.</p>
-  </div>
-  <div class="footer-cols">
-    <div class="footer-col">
-      <h5>Product</h5>
-      <a href="/solution/">Solution</a>
-      <a href="/customize/">Customize</a>
-      <a href="/pricing/">Pricing</a>
-    </div>
-    <div class="footer-col">
-      <h5>Company</h5>
-      <a href="/partners/">Partners</a>
-      <a href="/clients/">Clients</a>
-      <a href="#">Careers</a>
-    </div>
-    <div class="footer-col">
-      <h5>Contact</h5>
-      <a href="mailto:omer.yahya@rotman.utoronto.ca">omer.yahya@rotman.utoronto.ca</a>
-      <a href="#">Toronto, Canada</a>
-    </div>
-  </div>
-</footer>
-<div class="footer-bottom">
-  <span>© 2026 Cotton AI Inc.</span>
-  <span>ysintelligence.ai</span>
-</div>
-
-<script src="/mobile-nav.js"></script>
 </body>
 </html>
