@@ -72,6 +72,13 @@ nav {
   cursor: pointer;
 }
 .nav-cta:hover { background: rgba(200,169,110,0.08); border-color: var(--gold); }
+.nav-signout {
+  display: none;
+  font-size: 11px; color: var(--text-muted); text-decoration: none;
+  letter-spacing: 0.5px; white-space: nowrap;
+}
+.nav-signout:hover { color: var(--text-dim); }
+body.auth-ok .nav-signout { display: inline; }
 
 /* HERO */
 .hero {
@@ -456,10 +463,102 @@ footer {
   .footer-bottom { flex-direction: column; gap: 8px; }
   .data-monument .big { font-size: 72px; }
 }
+
+/* FIRST-VISIT AUTH (12h key — same algorithm as /private-portal/ and /key-booth/) */
+.site-gate {
+  position: fixed; inset: 0; z-index: 10050;
+  display: flex; align-items: center; justify-content: center;
+  padding: 32px 24px;
+  background: var(--bg);
+  overflow-y: auto;
+}
+.site-gate::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse 50% 40% at 20% 30%, rgba(200,169,110,0.06), transparent),
+    radial-gradient(ellipse 40% 50% at 80% 70%, rgba(200,169,110,0.03), transparent);
+  pointer-events: none;
+}
+.site-gate-card {
+  position: relative; width: 100%; max-width: 420px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  padding: 48px 40px 44px;
+}
+.site-gate-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border-gold), transparent);
+}
+.site-gate .overline {
+  font-size: 10px; letter-spacing: 4px; text-transform: uppercase;
+  color: var(--gold-dim); font-weight: 500; margin-bottom: 16px;
+  display: flex; align-items: center; gap: 10px;
+}
+.site-gate .overline::before { content: ''; width: 32px; height: 1px; background: var(--gold-dim); }
+.site-gate h2 {
+  font-family: var(--serif); font-size: 32px; font-weight: 400; line-height: 1.2;
+  margin-bottom: 12px;
+}
+.site-gate h2 em { font-style: italic; color: var(--gold); }
+.site-gate .lede { font-size: 14px; color: var(--text-dim); line-height: 1.7; font-weight: 300; margin-bottom: 8px; }
+.site-gate .hint { font-size: 12px; color: var(--text-muted); line-height: 1.6; margin-bottom: 28px; }
+.site-gate .hint a { color: var(--gold-dim); }
+.site-gate label { display: block; font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 10px; }
+.site-gate input[type="password"] {
+  width: 100%;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 16px 18px;
+  font-family: ui-monospace, 'SF Mono', Menlo, monospace;
+  font-size: 15px; letter-spacing: 0.08em;
+  margin-bottom: 24px;
+}
+.site-gate input[type="password"]:focus { outline: none; border-color: var(--border-gold); }
+.site-gate .gate-err { font-size: 13px; color: #f87171; margin: -12px 0 20px; min-height: 1.2em; }
+.site-gate .btn-gate {
+  width: 100%;
+  background: var(--gold); color: var(--bg);
+  border: none; padding: 16px 24px; font-size: 12px; letter-spacing: 2px; text-transform: uppercase;
+  font-weight: 600; font-family: var(--sans); cursor: pointer; transition: background 0.25s, transform 0.2s;
+}
+.site-gate .btn-gate:hover { background: var(--gold-bright); transform: translateY(-1px); }
+body.auth-ok .site-gate { display: none !important; }
+body.auth-pending .site-content { display: none; }
 </style>
 <link rel="stylesheet" href="/mobile-overrides.css">
 </head>
-<body>
+<body class="auth-pending">
+<script src="/shared/rotating-auth.js"></script>
+<script>
+(function () {
+  var KEY = 'cotton_private_session_bucket';
+  try {
+    if (window.CottonRotatingAuth && sessionStorage.getItem(KEY) === String(CottonRotatingAuth.getBucketIndex())) {
+      document.body.classList.remove('auth-pending');
+      document.body.classList.add('auth-ok');
+    }
+  } catch (e) {}
+})();
+</script>
+
+<div class="site-gate" id="siteGate" role="dialog" aria-modal="true" aria-labelledby="siteGateTitle">
+  <div class="site-gate-card">
+    <p class="overline">Restricted</p>
+    <h2 id="siteGateTitle">Cotton <em>AI</em></h2>
+    <p class="lede">This site is protected. Enter the current 12-hour access key for your team.</p>
+    <p class="hint">Need the key? Open the <a href="/key-booth/index.html">access key booth</a> (separate static password), then return here.</p>
+    <form id="siteGateForm" novalidate>
+      <label for="siteAccessKey">12h access key</label>
+      <input id="siteAccessKey" name="key" type="password" autocomplete="one-time-code" inputmode="text" spellcheck="false" required />
+      <p class="gate-err" id="siteGateErr" role="alert"></p>
+      <button type="submit" class="btn-gate">Continue to site</button>
+    </form>
+  </div>
+</div>
+
+<div class="site-content" id="siteContent">
 
 <!-- NAV -->
 <nav>
@@ -482,6 +581,7 @@ footer {
       <li><a href="/clients/">Clients</a></li>
     </ul>
     <a href="#contact" class="nav-cta">Request Access</a>
+    <a href="#" class="nav-signout" id="siteEndSession" title="Clear this browser session">End session</a>
   </div>
 </nav>
 
@@ -707,7 +807,60 @@ footer {
   <span>© 2026 Cotton AI Inc.</span>
   <span>ysintelligence.ai</span>
 </div>
+</div><!-- /.site-content -->
 
+<script>
+(function () {
+  var KEY = 'cotton_private_session_bucket';
+  var form = document.getElementById('siteGateForm');
+  var err = document.getElementById('siteGateErr');
+  if (!form || !window.CottonRotatingAuth) return;
+
+  function applyAuthState() {
+    var ok = false;
+    try {
+      ok = sessionStorage.getItem(KEY) === String(CottonRotatingAuth.getBucketIndex());
+    } catch (e) {}
+    document.body.classList.toggle('auth-ok', ok);
+    document.body.classList.toggle('auth-pending', !ok);
+  }
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    if (err) err.textContent = '';
+    var input = document.getElementById('siteAccessKey');
+    var attempt = input ? input.value : '';
+    CottonRotatingAuth.verifyRotatingPassword(attempt).then(function (pass) {
+      if (pass) {
+        sessionStorage.setItem(KEY, String(CottonRotatingAuth.getBucketIndex()));
+        if (input) input.value = '';
+        applyAuthState();
+      } else {
+        if (err) err.textContent = 'That key is not valid for the current 12h window.';
+      }
+    });
+  });
+
+  var end = document.getElementById('siteEndSession');
+  if (end) {
+    end.addEventListener('click', function (e) {
+      e.preventDefault();
+      sessionStorage.removeItem(KEY);
+      applyAuthState();
+    });
+  }
+
+  setInterval(function () {
+    if (!document.body.classList.contains('auth-ok')) return;
+    try {
+      if (sessionStorage.getItem(KEY) !== String(CottonRotatingAuth.getBucketIndex())) {
+        sessionStorage.removeItem(KEY);
+        applyAuthState();
+      }
+    } catch (x) {}
+  }, 60 * 1000);
+})();
+</script>
 <script src="/mobile-nav.js"></script>
 </body>
 </html>
