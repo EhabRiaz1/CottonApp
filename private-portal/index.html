@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Private area — Cotton AI</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #09090b;
+      --bg-elevated: #111113;
+      --bg-card: #16161a;
+      --text: #e4e2db;
+      --text-dim: #7a7872;
+      --text-muted: #4a4944;
+      --gold: #c8a96e;
+      --gold-bright: #dbbd84;
+      --gold-dim: #8a7545;
+      --border: rgba(255, 255, 255, 0.06);
+      --border-gold: rgba(200, 169, 110, 0.2);
+      --serif: 'Cormorant Garamond', Georgia, serif;
+      --sans: 'Outfit', -apple-system, sans-serif;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: var(--sans);
+      color: var(--text);
+      background: var(--bg);
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 0.025;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    }
+    .page { min-height: 100vh; display: flex; flex-direction: column; position: relative; }
+    .page::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 50% 40% at 20% 30%, rgba(200, 169, 110, 0.05), transparent),
+        radial-gradient(ellipse 40% 50% at 80% 70%, rgba(200, 169, 110, 0.03), transparent);
+      pointer-events: none;
+    }
+    header {
+      position: relative;
+      z-index: 1;
+      padding: 24px 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+      background: rgba(9, 9, 11, 0.75);
+      backdrop-filter: blur(20px) saturate(1.2);
+    }
+    .logo {
+      font-weight: 600;
+      font-size: 15px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--gold);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .logo-line { width: 20px; height: 1px; background: var(--gold-dim); }
+    .logo a { color: inherit; text-decoration: none; }
+    .back { font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-dim); text-decoration: none; }
+    .back:hover { color: var(--text); }
+    .main { flex: 1; position: relative; z-index: 1; }
+    .center {
+      min-height: calc(100vh - 80px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 48px 24px 80px;
+    }
+    .card {
+      width: 100%;
+      max-width: 420px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      padding: 48px 40px 44px;
+      position: relative;
+    }
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--border-gold), transparent);
+    }
+    .overline {
+      font-size: 10px;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--gold-dim);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .overline::before { content: ''; width: 32px; height: 1px; background: var(--gold-dim); }
+    h1 {
+      font-family: var(--serif);
+      font-size: 32px;
+      font-weight: 400;
+      line-height: 1.2;
+      margin-bottom: 12px;
+    }
+    h1 em { font-style: italic; color: var(--gold); }
+    .lede { font-size: 14px; color: var(--text-dim); line-height: 1.7; font-weight: 300; margin-bottom: 10px; }
+    .hint { font-size: 12px; color: var(--text-muted); line-height: 1.6; margin-bottom: 28px; }
+    .hint a { color: var(--gold-dim); }
+    label { display: block; font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 10px; }
+    input[type="password"] {
+      width: 100%;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 16px 18px;
+      font-family: ui-monospace, 'SF Mono', Menlo, monospace;
+      font-size: 15px;
+      letter-spacing: 0.08em;
+      margin-bottom: 24px;
+    }
+    input[type="password"]:focus {
+      outline: none;
+      border-color: var(--border-gold);
+    }
+    .err { font-size: 13px; color: #f87171; margin: -12px 0 20px; min-height: 1.2em; }
+    .btn {
+      width: 100%;
+      background: var(--gold);
+      color: var(--bg);
+      border: none;
+      padding: 16px 24px;
+      font-size: 12px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      font-weight: 600;
+      font-family: var(--sans);
+      cursor: pointer;
+      transition: background 0.25s, transform 0.2s;
+    }
+    .btn:hover { background: var(--gold-bright); transform: translateY(-1px); }
+    .panel { display: none; }
+    .panel.on { display: block; }
+    .content-wrap { max-width: 900px; margin: 0 auto; padding: 100px 48px 120px; }
+    .content-wrap h1 { font-size: clamp(36px, 5vw, 48px); margin-bottom: 20px; }
+    .content-wrap p { color: var(--text-dim); line-height: 1.8; max-width: 560px; font-weight: 300; }
+    .signout {
+      display: inline-block;
+      margin-top: 32px;
+      font-size: 11px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      background: none;
+      border: 1px solid var(--border);
+      padding: 10px 20px;
+      cursor: pointer;
+      font-family: var(--sans);
+    }
+    .signout:hover { color: var(--text); border-color: var(--text-dim); }
+    @media (max-width: 520px) {
+      header { padding: 20px 20px; }
+      .card { padding: 36px 24px; }
+      .content-wrap { padding: 72px 24px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header>
+      <div class="logo">
+        <span class="logo-line" aria-hidden="true"></span>
+        <a href="../index.html">Cotton AI</a>
+      </div>
+      <a class="back" href="../index.html">← Home</a>
+    </header>
+    <div class="main">
+      <div id="loginView" class="center">
+        <div class="card">
+          <p class="overline">Restricted</p>
+          <h1>Private <em>portal</em></h1>
+          <p class="lede">Enter the current 12-hour access key. Keys rotate on a fixed schedule; your session is valid for this 12h window in this browser.</p>
+          <p class="hint">Need the current key? Use the <a href="../key-booth/index.html">access key</a> page (separate static password).</p>
+          <form id="loginForm" novalidate>
+            <label for="accessKey">12h access key</label>
+            <input id="accessKey" type="password" autocomplete="one-time-code" inputmode="text" spellcheck="false" required />
+            <p class="err" id="loginErr" role="alert"></p>
+            <button type="submit" class="btn">Enter</button>
+          </form>
+        </div>
+      </div>
+
+      <div id="contentView" class="panel">
+        <div class="content-wrap">
+          <p class="overline">Inside the portal</p>
+          <h1>Welcome to the <em>private</em> area</h1>
+          <p>
+            This is a placeholder. Replace this section with your private content, documents, or links.
+            The barrier in front of this page is the time-based key, which is recomputed in your browser
+            and checked against the same algorithm used on the key booth page.
+          </p>
+          <button type="button" class="signout" id="signoutBtn">End session</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="../shared/rotating-auth.js"></script>
+  <script>
+    (function () {
+      var KEY_BUCKET = 'cotton_private_session_bucket';
+      var loginView = document.getElementById('loginView');
+      var contentView = document.getElementById('contentView');
+      var form = document.getElementById('loginForm');
+      var err = document.getElementById('loginErr');
+
+      function showContent() {
+        loginView.style.display = 'none';
+        contentView.classList.add('on');
+      }
+
+      function showLogin() {
+        contentView.classList.remove('on');
+        loginView.style.display = '';
+      }
+
+      function sessionValid() {
+        var s = sessionStorage.getItem(KEY_BUCKET);
+        if (s == null) return false;
+        return String(CottonRotatingAuth.getBucketIndex()) === s;
+      }
+
+      if (sessionValid()) {
+        showContent();
+      }
+
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        err.textContent = '';
+        var attempt = document.getElementById('accessKey').value;
+        CottonRotatingAuth.verifyRotatingPassword(attempt).then(function (ok) {
+          if (ok) {
+            sessionStorage.setItem(KEY_BUCKET, String(CottonRotatingAuth.getBucketIndex()));
+            showContent();
+            document.getElementById('accessKey').value = '';
+          } else {
+            err.textContent = 'That key is not valid for the current 12h window.';
+          }
+        });
+      });
+
+      document.getElementById('signoutBtn').addEventListener('click', function () {
+        sessionStorage.removeItem(KEY_BUCKET);
+        showLogin();
+      });
+
+      // If the 12h window rolled over while the tab stayed open, lock again.
+      setInterval(function () {
+        if (!contentView.classList.contains('on')) return;
+        if (!sessionValid()) {
+          sessionStorage.removeItem(KEY_BUCKET);
+          showLogin();
+        }
+      }, 60 * 1000);
+    })();
+  </script>
+</body>
+</html>
