@@ -185,6 +185,39 @@
     }
     .btn-outline:hover { border-color: var(--text-dim); color: var(--text); }
     .visually-hidden { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); border: 0; }
+    .main { flex-direction: column; gap: 24px; }
+    .operator-card {
+      width: 100%;
+      max-width: 420px;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      padding: 24px 28px 28px;
+    }
+    .operator-card h2 {
+      font-family: var(--serif);
+      font-size: 20px;
+      font-weight: 400;
+      margin-bottom: 8px;
+      color: var(--text);
+    }
+    .operator-card .op-desc {
+      font-size: 13px;
+      color: var(--text-dim);
+      line-height: 1.65;
+      margin-bottom: 16px;
+      font-weight: 300;
+    }
+    .auth-flag-row { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 12px; }
+    .auth-flag-label { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--text-muted); }
+    .auth-flag-pill {
+      font-size: 12px; font-weight: 600; letter-spacing: 1px;
+      padding: 6px 14px; border-radius: 2px; border: 1px solid var(--border);
+    }
+    .auth-flag-pill.on { color: var(--gold); border-color: var(--border-gold); background: rgba(200, 169, 110, 0.08); }
+    .auth-flag-pill.off { color: var(--text-dim); }
+    .auth-flag-pill.unknown { color: var(--text-muted); }
+    .operator-card a.gh-link { font-size: 12px; color: var(--gold-dim); }
+    .operator-card a.gh-link:hover { color: var(--gold-bright); }
     @media (max-width: 520px) {
       header { padding: 20px 20px; }
       .card { padding: 36px 24px; }
@@ -223,6 +256,17 @@
             <a class="btn-outline" href="../private-portal/index.html" style="text-decoration: none; display: inline-block;">Open private portal</a>
           </div>
         </div>
+      </div>
+
+      <div class="operator-card" id="mainSiteLockPanel" aria-labelledby="opCardTitle">
+        <h2 id="opCardTitle">Marketing home lock</h2>
+        <p class="op-desc">The public Cotton <strong>home page</strong> can require the 12h key. There is <strong>no on/off control on this page</strong>—only the <code style="color: var(--text-dim);">auth-flag.js</code> file. The line below shows what this copy of the file says after deploy.</p>
+        <div class="auth-flag-row">
+          <span class="auth-flag-label">Current setting</span>
+          <span class="auth-flag-pill unknown" id="authFlagPill">Loading…</span>
+        </div>
+        <p class="op-desc" id="authFlagDetail" style="font-size: 12px; margin-bottom: 10px;">—</p>
+        <a class="gh-link" href="https://github.com/EhabRiaz1/CottonApp/blob/main/key-booth/auth-flag.js" target="_blank" rel="noopener">Edit on GitHub in CottonApp (then deploy) — or use the separate <em>pwd</em> repo if the main site loads the flag from there</a>
       </div>
     </div>
   </div>
@@ -279,6 +323,34 @@
           navigator.clipboard.writeText(t);
         }
       });
+    })();
+  </script>
+  <script>
+    (function () {
+      var pill = document.getElementById('authFlagPill');
+      var detail = document.getElementById('authFlagDetail');
+      if (!pill || !detail) return;
+      function setUnknown(msg) {
+        pill.className = 'auth-flag-pill unknown';
+        pill.textContent = msg || 'Could not load';
+        detail.textContent = 'Open this page over HTTPS. If the flag lives only on the pwd app, use that site to see status.';
+      }
+      fetch('auth-flag.js', { cache: 'no-store' })
+        .then(function (r) { return r.text(); })
+        .then(function (text) {
+          var m = text.match(/__COTTON_SITE_AUTH\s*=\s*(true|false)/);
+          var on = m && m[1] === 'true';
+          if (on) {
+            pill.className = 'auth-flag-pill on';
+            pill.textContent = 'ON — home page locked';
+            detail.textContent = 'Main index is configured to require the 12h key (when it loads the flag from this file’s URL).';
+          } else {
+            pill.className = 'auth-flag-pill off';
+            pill.textContent = 'OFF — home page public';
+            detail.textContent = 'Main marketing home is open; no key on first screen.';
+          }
+        })
+        .catch(function () { setUnknown('Unloaded'); });
     })();
   </script>
 </body>
