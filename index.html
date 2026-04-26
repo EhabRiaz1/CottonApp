@@ -531,13 +531,17 @@ html:not(.cotton-site-auth-on) .site-gate { display: none !important; }
 html:not(.cotton-site-auth-on) .site-content { display: block; }
 </style>
 <link rel="stylesheet" href="/mobile-overrides.css">
-<!-- Key booth: edit auth-flag.js and deploy. Change src to your booth (GitHub Pages / Vercel) or use /key-booth/auth-flag.js on same host. Bump ?v= after a toggle to bust cache. -->
-<script src="https://EhabRiaz1.github.io/pwd/auth-flag.js?v=1" charset="utf-8" onerror="window.__COTTON_AUTH_FLAG_ERR=1"></script>
+<!--
+  Home gate: reads key-booth/auth-flag.js (same site — reliable). Set __COTTON_SITE_AUTH = true | false, deploy this repo.
+  Optional remote: replace src below with e.g. https://YOUR-USER.github.io/pwd/auth-flag.js
+  After changing the flag, bump ?v= so browsers do not use an old cached file.
+-->
+<script src="key-booth/auth-flag.js?v=4" charset="utf-8" onerror="window.__COTTON_AUTH_FLAG_ERR=1"></script>
 <script>
 (function () {
   if (window.__COTTON_AUTH_FLAG_ERR) window.__COTTON_SITE_AUTH = false;
-  if (window.__COTTON_SITE_AUTH !== true) window.__COTTON_SITE_AUTH = false;
-  document.documentElement.classList.toggle('cotton-site-auth-on', window.__COTTON_SITE_AUTH === true);
+  var on = window.__COTTON_SITE_AUTH === true;
+  document.documentElement.classList.toggle('cotton-site-auth-on', on);
 })();
 </script>
 </head>
