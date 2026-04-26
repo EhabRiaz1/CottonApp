@@ -207,15 +207,36 @@
       margin-bottom: 16px;
       font-weight: 300;
     }
-    .auth-flag-row { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 12px; }
-    .auth-flag-label { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--text-muted); }
+    .op-toggle-row {
+      display: flex; align-items: center; justify-content: space-between; gap: 16px;
+      margin-bottom: 12px; flex-wrap: wrap;
+    }
+    .op-toggle-row > span { font-size: 12px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-dim); }
+    .slide-toggle { position: relative; display: inline-block; width: 52px; height: 28px; flex-shrink: 0; }
+    .slide-toggle input { position: absolute; opacity: 0; width: 0; height: 0; }
+    .slide-track {
+      position: absolute; inset: 0; cursor: pointer; border-radius: 14px;
+      background: var(--bg-elevated); border: 1px solid var(--border);
+      transition: background 0.2s, border-color 0.2s;
+    }
+    .slide-thumb {
+      position: absolute; height: 22px; width: 22px; left: 2px; top: 2px; border-radius: 50%;
+      background: var(--text-muted); transition: transform 0.2s, background 0.2s;
+    }
+    .slide-toggle input:checked + .slide-track { background: rgba(200, 169, 110, 0.2); border-color: var(--border-gold); }
+    .slide-toggle input:checked + .slide-track .slide-thumb { transform: translateX(24px); background: var(--gold); }
+    .slide-toggle input:focus-visible + .slide-track { outline: 2px solid var(--gold-dim); outline-offset: 2px; }
+    .slide-toggle--remote-off .slide-track { cursor: not-allowed; opacity: 0.55; }
     .auth-flag-pill {
-      font-size: 12px; font-weight: 600; letter-spacing: 1px;
+      display: inline-block; font-size: 12px; font-weight: 600; letter-spacing: 0.5px;
       padding: 6px 14px; border-radius: 2px; border: 1px solid var(--border);
     }
     .auth-flag-pill.on { color: var(--gold); border-color: var(--border-gold); background: rgba(200, 169, 110, 0.08); }
     .auth-flag-pill.off { color: var(--text-dim); }
     .auth-flag-pill.unknown { color: var(--text-muted); }
+    .op-toggle-err { font-size: 12px; color: #f87171; min-height: 1.2em; margin: 0 0 8px; }
+    .op-status-wrap { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-bottom: 8px; }
+    .op-status-label { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--text-muted); }
     .operator-card a.gh-link { font-size: 12px; color: var(--gold-dim); }
     .operator-card a.gh-link:hover { color: var(--gold-bright); }
     @media (max-width: 520px) {
@@ -260,13 +281,27 @@
 
       <div class="operator-card" id="mainSiteLockPanel" aria-labelledby="opCardTitle">
         <h2 id="opCardTitle">Marketing home lock</h2>
-        <p class="op-desc">The public Cotton <strong>home page</strong> can require the 12h key. There is <strong>no on/off control on this page</strong>—only the <code style="color: var(--text-dim);">auth-flag.js</code> file. The line below shows what this copy of the file says after deploy.</p>
-        <div class="auth-flag-row">
-          <span class="auth-flag-label">Current setting</span>
+        <p class="op-desc" id="opRemoteIntro">This <code>key-booth</code> copy of <code>auth-flag.js</code> controls the home gate when the main site points here. The slide can push to the CottonApp repo if you deploy <code>api/toggle</code> on Vercel and set the config below.</p>
+        <p class="op-desc" id="remoteDisabledHelp" style="font-size: 12px; color: var(--text-muted); margin-bottom: 12px; display: none;">To enable the slide, deploy the repo’s <code>api/toggle.js</code> to Vercel with <code>GITHUB_REPO=CottonApp</code> and <code>AUTH_FLAG_PATH=key-booth/auth-flag.js</code>, then set <code>__COTTON_TOGGLE_API</code> and <code>__COTTON_TOGGLE_SECRET</code> in the script block to match. Otherwise edit the file on GitHub.</p>
+        <div class="op-toggle-row">
+          <span>Lock home page (12h key)</span>
+          <label class="slide-toggle" id="authFlagToggleWrap" title="Toggle marketing site password gate">
+            <input type="checkbox" id="authFlagToggle" role="switch" aria-checked="false" disabled />
+            <span class="slide-track" aria-hidden="true"><span class="slide-thumb"></span></span>
+          </label>
+        </div>
+        <p class="op-toggle-err" id="toggleError" role="status"></p>
+        <div class="op-status-wrap">
+          <span class="op-status-label">File status</span>
           <span class="auth-flag-pill unknown" id="authFlagPill">Loading…</span>
         </div>
         <p class="op-desc" id="authFlagDetail" style="font-size: 12px; margin-bottom: 10px;">—</p>
-        <a class="gh-link" href="https://github.com/EhabRiaz1/CottonApp/blob/main/key-booth/auth-flag.js" target="_blank" rel="noopener">Edit on GitHub in CottonApp (then deploy) — or use the separate <em>pwd</em> repo if the main site loads the flag from there</a>
+        <script>
+        window.__COTTON_TOGGLE_API = '';
+        window.__COTTON_TOGGLE_SECRET = '';
+        </script>
+        <p class="op-desc" id="toggleRemoteNote" style="font-size: 11px; color: var(--text-muted); margin-top: 4px; min-height: 1.2em; display: none;">—</p>
+        <a class="gh-link" href="https://github.com/EhabRiaz1/CottonApp/blob/main/key-booth/auth-flag.js" target="_blank" rel="noopener">Or edit <code>key-booth/auth-flag.js</code> on GitHub</a>
       </div>
     </div>
   </div>
@@ -329,28 +364,124 @@
     (function () {
       var pill = document.getElementById('authFlagPill');
       var detail = document.getElementById('authFlagDetail');
-      if (!pill || !detail) return;
+      var sw = document.getElementById('authFlagToggle');
+      var swWrap = document.getElementById('authFlagToggleWrap');
+      var errEl = document.getElementById('toggleError');
+      var note = document.getElementById('toggleRemoteNote');
+      if (!pill || !detail || !sw || !swWrap) return;
+
+      var api = typeof window.__COTTON_TOGGLE_API === 'string' ? window.__COTTON_TOGGLE_API.trim() : '';
+      var secret = typeof window.__COTTON_TOGGLE_SECRET === 'string' ? window.__COTTON_TOGGLE_SECRET : '';
+      var remote = !!(api && secret);
+
+      var help = document.getElementById('remoteDisabledHelp');
+      if (remote) {
+        swWrap.classList.remove('slide-toggle--remote-off');
+        sw.removeAttribute('disabled');
+        if (help) help.style.display = 'none';
+      } else {
+        swWrap.classList.add('slide-toggle--remote-off');
+        sw.setAttribute('disabled', 'disabled');
+        if (help) help.style.display = 'block';
+        if (note) {
+          note.style.display = 'none';
+          note.textContent = '';
+        }
+      }
+
+      function setPillAndDetail(on) {
+        if (on) {
+          pill.className = 'auth-flag-pill on';
+          pill.textContent = 'ON — home page locked';
+          detail.textContent =
+            'The main home is set to require the 12h key when the marketing site loads this file’s URL as the flag source.';
+        } else {
+          pill.className = 'auth-flag-pill off';
+          pill.textContent = 'OFF — home page public';
+          detail.textContent = 'The main marketing home is set to be open; no key on the first screen.';
+        }
+        sw.checked = on;
+        sw.setAttribute('aria-checked', on ? 'true' : 'false');
+      }
+
       function setUnknown(msg) {
         pill.className = 'auth-flag-pill unknown';
         pill.textContent = msg || 'Could not load';
-        detail.textContent = 'Open this page over HTTPS. If the flag lives only on the pwd app, use that site to see status.';
+        detail.textContent = 'Use HTTPS. The separate pwd site may be the one your main page loads for the flag.';
+        sw.checked = false;
+        sw.setAttribute('aria-checked', 'false');
       }
-      fetch('auth-flag.js', { cache: 'no-store' })
-        .then(function (r) { return r.text(); })
-        .then(function (text) {
-          var m = text.match(/__COTTON_SITE_AUTH\s*=\s*(true|false)/);
-          var on = m && m[1] === 'true';
-          if (on) {
-            pill.className = 'auth-flag-pill on';
-            pill.textContent = 'ON — home page locked';
-            detail.textContent = 'Main index is configured to require the 12h key (when it loads the flag from this file’s URL).';
-          } else {
-            pill.className = 'auth-flag-pill off';
-            pill.textContent = 'OFF — home page public';
-            detail.textContent = 'Main marketing home is open; no key on first screen.';
-          }
+
+      function loadFlag() {
+        return fetch('auth-flag.js', { cache: 'no-store' })
+          .then(function (r) { return r.text(); })
+          .then(function (text) {
+            var m = text.match(/__COTTON_SITE_AUTH\s*=\s*(true|false)/);
+            var on = m && m[1] === 'true';
+            setPillAndDetail(!!on);
+            errEl.textContent = '';
+            return on;
+          })
+          .catch(function () {
+            setUnknown('Unloaded');
+          });
+      }
+
+      loadFlag();
+
+      sw.addEventListener('change', function () {
+        if (!remote) return;
+        var want = sw.checked;
+        errEl.textContent = '';
+        if (note) {
+          note.style.display = 'block';
+          note.textContent = 'Saving…';
+        }
+        sw.disabled = true;
+        var postUrl;
+        try {
+          postUrl = new URL(api, window.location.origin);
+        } catch (e) {
+          postUrl = new URL(api);
+        }
+        postUrl.searchParams.set('cacheBust', String(Date.now()));
+        fetch(postUrl.toString(), {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + secret },
+          body: JSON.stringify({ on: want }),
         })
-        .catch(function () { setUnknown('Unloaded'); });
+          .then(function (r) {
+            if (r.ok) return r.json();
+            return r.text().then(function (t) {
+              var j;
+              try {
+                j = JSON.parse(t);
+              } catch (x) {
+                throw new Error(t ? t.slice(0, 100) : String(r.status));
+              }
+              throw new Error((j && j.error) || t.slice(0, 80));
+            });
+          })
+          .then(function () {
+            if (note) {
+              note.textContent =
+                'Updated on GitHub. Wait for deploy; then verify the main site’s auth-flag script URL.';
+            }
+            return loadFlag();
+          })
+          .catch(function (e) {
+            if (note) {
+              note.style.display = 'none';
+              note.textContent = '';
+            }
+            errEl.textContent = (e && e.message) || 'Request failed. Toggle reverted.';
+            sw.checked = !want;
+            sw.setAttribute('aria-checked', sw.checked ? 'true' : 'false');
+          })
+          .finally(function () {
+            if (remote) sw.removeAttribute('disabled');
+          });
+      });
     })();
   </script>
 </body>
