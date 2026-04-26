@@ -78,7 +78,7 @@ nav {
   letter-spacing: 0.5px; white-space: nowrap;
 }
 .nav-signout:hover { color: var(--text-dim); }
-body.auth-ok .nav-signout { display: inline; }
+html.cotton-site-auth-on body.auth-ok .nav-signout { display: inline; }
 
 /* HERO */
 .hero {
@@ -524,22 +524,42 @@ footer {
   font-weight: 600; font-family: var(--sans); cursor: pointer; transition: background 0.25s, transform 0.2s;
 }
 .site-gate .btn-gate:hover { background: var(--gold-bright); transform: translateY(-1px); }
-body.auth-ok .site-gate { display: none !important; }
-body.auth-pending .site-content { display: none; }
+/* Remote toggle: set __COTTON_SITE_AUTH in key booth’s auth-flag.js; html.cotton-site-auth-on = gate active */
+html.cotton-site-auth-on body.auth-ok .site-gate { display: none !important; }
+html.cotton-site-auth-on body:not(.auth-ok) .site-content { display: none; }
+html:not(.cotton-site-auth-on) .site-gate { display: none !important; }
+html:not(.cotton-site-auth-on) .site-content { display: block; }
 </style>
 <link rel="stylesheet" href="/mobile-overrides.css">
+<!-- Key booth: edit auth-flag.js and deploy. Change src to your booth (GitHub Pages / Vercel) or use /key-booth/auth-flag.js on same host. Bump ?v= after a toggle to bust cache. -->
+<script src="https://EhabRiaz1.github.io/pwd/auth-flag.js?v=1" charset="utf-8" onerror="window.__COTTON_AUTH_FLAG_ERR=1"></script>
+<script>
+(function () {
+  if (window.__COTTON_AUTH_FLAG_ERR) window.__COTTON_SITE_AUTH = false;
+  if (window.__COTTON_SITE_AUTH !== true) window.__COTTON_SITE_AUTH = false;
+  document.documentElement.classList.toggle('cotton-site-auth-on', window.__COTTON_SITE_AUTH === true);
+})();
+</script>
 </head>
-<body class="auth-pending">
+<body>
 <script src="/shared/rotating-auth.js"></script>
 <script>
 (function () {
+  var authOn = document.documentElement.classList.contains('cotton-site-auth-on');
   var KEY = 'cotton_private_session_bucket';
+  if (!authOn) {
+    document.body.classList.add('auth-ok');
+    return;
+  }
   try {
     if (window.CottonRotatingAuth && sessionStorage.getItem(KEY) === String(CottonRotatingAuth.getBucketIndex())) {
-      document.body.classList.remove('auth-pending');
       document.body.classList.add('auth-ok');
+    } else {
+      document.body.classList.add('auth-pending');
     }
-  } catch (e) {}
+  } catch (e) {
+    document.body.classList.add('auth-pending');
+  }
 })();
 </script>
 
@@ -814,9 +834,18 @@ body.auth-pending .site-content { display: none; }
   var KEY = 'cotton_private_session_bucket';
   var form = document.getElementById('siteGateForm');
   var err = document.getElementById('siteGateErr');
-  if (!form || !window.CottonRotatingAuth) return;
+
+  function siteAuthOn() {
+    return document.documentElement.classList.contains('cotton-site-auth-on');
+  }
 
   function applyAuthState() {
+    if (!siteAuthOn()) {
+      document.body.classList.add('auth-ok');
+      document.body.classList.remove('auth-pending');
+      return;
+    }
+    if (!window.CottonRotatingAuth) return;
     var ok = false;
     try {
       ok = sessionStorage.getItem(KEY) === String(CottonRotatingAuth.getBucketIndex());
@@ -825,33 +854,37 @@ body.auth-pending .site-content { display: none; }
     document.body.classList.toggle('auth-pending', !ok);
   }
 
-  form.addEventListener('submit', function (e) {
-    e.preventDefault();
-    if (err) err.textContent = '';
-    var input = document.getElementById('siteAccessKey');
-    var attempt = input ? input.value : '';
-    CottonRotatingAuth.verifyRotatingPassword(attempt).then(function (pass) {
-      if (pass) {
-        sessionStorage.setItem(KEY, String(CottonRotatingAuth.getBucketIndex()));
-        if (input) input.value = '';
-        applyAuthState();
-      } else {
-        if (err) err.textContent = 'That key is not valid for the current 12h window.';
-      }
+  if (form && window.CottonRotatingAuth) {
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      if (!siteAuthOn()) return;
+      if (err) err.textContent = '';
+      var input = document.getElementById('siteAccessKey');
+      var attempt = input ? input.value : '';
+      CottonRotatingAuth.verifyRotatingPassword(attempt).then(function (pass) {
+        if (pass) {
+          sessionStorage.setItem(KEY, String(CottonRotatingAuth.getBucketIndex()));
+          if (input) input.value = '';
+          applyAuthState();
+        } else {
+          if (err) err.textContent = 'That key is not valid for the current 12h window.';
+        }
+      });
     });
-  });
+  }
 
   var end = document.getElementById('siteEndSession');
   if (end) {
     end.addEventListener('click', function (e) {
       e.preventDefault();
+      if (!siteAuthOn()) return;
       sessionStorage.removeItem(KEY);
       applyAuthState();
     });
   }
 
   setInterval(function () {
-    if (!document.body.classList.contains('auth-ok')) return;
+    if (!siteAuthOn() || !document.body.classList.contains('auth-ok') || !window.CottonRotatingAuth) return;
     try {
       if (sessionStorage.getItem(KEY) !== String(CottonRotatingAuth.getBucketIndex())) {
         sessionStorage.removeItem(KEY);
